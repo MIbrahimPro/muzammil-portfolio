@@ -268,8 +268,8 @@ function useReveal() {
       "(prefers-reduced-motion: reduce)",
     ).matches;
     if (prefersReduced) {
-      setVisible(true);
-      return;
+      const frame = window.requestAnimationFrame(() => setVisible(true));
+      return () => window.cancelAnimationFrame(frame);
     }
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -394,24 +394,6 @@ function SecondaryBtn({ children, onClick, href }) {
     </button>
   );
 }
-
-// ─── Icons ────────────────────────────────────────────────────────────────────
-
-const ICONS = {
-  globe: (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-    </svg>
-  ),
-};
 
 // ─── Nav ──────────────────────────────────────────────────────────────────────
 
@@ -581,16 +563,23 @@ function Nav() {
 function Hero() {
   return (
     <section
+      className="hero-orbit-section"
       style={{
-        minHeight: "100vh",
+        position: "relative",
+        minHeight: "max(820px, 100svh)",
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start",
         justifyContent: "center",
-        padding: "110px 24px 64px",
+        padding: "110px 24px 80px",
         textAlign: "center",
+        overflow: "hidden",
+        isolation: "isolate",
       }}
     >
-      <div style={{ width: "100%", maxWidth: 820 }}>
+      <div style={{ width: "100%", maxWidth: 1200 }}>
+        <ProjectShowcase />
+
+        <div className="hero-copy-layer" style={{ width: "100%", maxWidth: 820, margin: "0 auto" }}>
         <RevealWrapper>
           <div
             style={{
@@ -692,6 +681,8 @@ function Hero() {
             </SecondaryBtn>
           </div>
         </RevealWrapper>
+        </div>
+
       </div>
     </section>
   );
@@ -855,8 +846,11 @@ function MetricCard({ item, index = 0 }) {
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
 
-function ProjectShowcase() {
+export function DiscreteProjectShowcase() {
   const [activeTab, setActiveTab] = useState("all");
+  const [frontIndex, setFrontIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [pinned, setPinned] = useState(false);
   const tabs = [
     { id: "all", label: "All Projects" },
     { id: "Shopify", label: "Shopify" },
@@ -867,40 +861,323 @@ function ProjectShowcase() {
     activeTab === "all"
       ? DATA.projects
       : DATA.projects.filter((p) => p.category === activeTab);
+  const selectedProject = selectedIndex === null ? null : filtered[selectedIndex];
+
+  useEffect(() => {
+    if (
+      selectedIndex !== null ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setFrontIndex((current) => (current + 1) % filtered.length);
+    }, 1900);
+    return () => window.clearInterval(interval);
+  }, [filtered.length, selectedIndex]);
+
+  const selectTab = (tabId) => {
+    setActiveTab(tabId);
+    setFrontIndex(0);
+    setSelectedIndex(null);
+    setPinned(false);
+  };
+
+  const rotate = (direction) => {
+    setFrontIndex((current) =>
+      (current + direction + filtered.length) % filtered.length,
+    );
+    setSelectedIndex(null);
+    setPinned(false);
+  };
+
+  const openProject = (project, index) => {
+    if (index !== selectedIndex) {
+      setSelectedIndex(index);
+      setPinned(true);
+      return;
+    }
+    window.open(project.siteUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const getCardPosition = (index) => {
+    if (index === selectedIndex) {
+      return {
+        left: "50%",
+        top: "38%",
+        zIndex: 40,
+        opacity: 1,
+        filter: "none",
+        transform: "translate(-50%, -50%) scale(2.5)",
+      };
+    }
+
+    const relative = (index - frontIndex + filtered.length) % filtered.length;
+    const angle = (relative / filtered.length) * Math.PI * 2 + Math.PI / 2;
+    const depth = (Math.sin(angle) + 1) / 2;
+    const scale = 0.7 + depth * 0.38;
+
+    return {
+      left: `${50 + Math.cos(angle) * 43}%`,
+      top: `${48 + Math.sin(angle) * 34}%`,
+      zIndex: 5 + Math.round(depth * 18),
+      opacity: 0.38 + depth * 0.58,
+      filter: `saturate(${0.72 + depth * 0.28})`,
+      transform: `translate(-50%, -50%) scale(${scale})`,
+    };
+  };
 
   return (
-    <section id="projects" style={{ padding: "80px 0" }}>
+    <section id="projects" style={{ padding: "28px 0 0" }}>
+      <style>{`
+        .project-circle-stage {
+          position: relative;
+          width: 100%;
+          height: clamp(540px, 54vw, 650px);
+          margin-top: 4px;
+          overflow: hidden;
+          outline: none;
+        }
+        .project-circle-stage:focus-visible {
+          outline: 2px solid #51D2D6;
+          outline-offset: 6px;
+          border-radius: 22px;
+        }
+        .project-orbit-track {
+          position: absolute;
+          z-index: 1;
+          top: 14%;
+          right: 6%;
+          bottom: 18%;
+          left: 6%;
+          border: 1px solid rgba(81, 210, 214, 0.22);
+          border-radius: 50%;
+          box-shadow: inset 0 0 80px rgba(81, 210, 214, 0.035);
+          pointer-events: none;
+        }
+        .project-orbit-track::after {
+          content: '';
+          position: absolute;
+          inset: 14% 7%;
+          border: 1px dashed rgba(81, 210, 214, 0.1);
+          border-radius: inherit;
+        }
+        .circle-project-card {
+          position: absolute;
+          width: clamp(74px, 10.8vw, 132px);
+          aspect-ratio: 16 / 9;
+          padding: 0;
+          overflow: hidden;
+          border: 1px solid rgba(81, 210, 214, 0.38);
+          border-radius: 6px;
+          background: #E8EDED;
+          box-shadow: 0 8px 22px rgba(41, 41, 40, 0.08);
+          cursor: pointer;
+          transition:
+            left 620ms cubic-bezier(0.77, 0, 0.175, 1),
+            top 620ms cubic-bezier(0.77, 0, 0.175, 1),
+            transform 620ms cubic-bezier(0.77, 0, 0.175, 1),
+            opacity 260ms ease,
+            filter 260ms ease,
+            border-color 180ms ease,
+            box-shadow 260ms ease;
+          will-change: left, top, transform;
+        }
+        .circle-project-card.is-active {
+          border-color: rgba(81, 210, 214, 0.88);
+          box-shadow:
+            0 16px 46px rgba(41, 41, 40, 0.15),
+            0 0 0 2px rgba(81, 210, 214, 0.12);
+          cursor: pointer;
+        }
+        .circle-project-card:active {
+          transition-duration: 140ms;
+        }
+        .circle-project-card img {
+          display: block;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          pointer-events: none;
+        }
+        .circle-project-card span {
+          position: absolute;
+          right: 5px;
+          bottom: 5px;
+          display: grid;
+          width: 14px;
+          height: 14px;
+          place-items: center;
+          border-radius: 50%;
+          color: #292928;
+          background: rgba(255,255,255,0.9);
+          font: 700 5px/1 'DM Sans', sans-serif;
+          opacity: 0;
+          transition: opacity 180ms ease;
+        }
+        .circle-project-card.is-active span {
+          opacity: 1;
+        }
+        .circle-project-detail {
+          position: absolute;
+          top: 61%;
+          left: 50%;
+          z-index: 42;
+          width: min(400px, calc(100% - 150px));
+          padding: 18px 20px;
+          border: 1px solid rgba(81, 210, 214, 0.3);
+          border-radius: 14px;
+          background: rgba(243, 245, 244, 0.92);
+          box-shadow: 0 14px 44px rgba(41, 41, 40, 0.08);
+          backdrop-filter: blur(16px);
+          transform: translateX(-50%);
+          animation: circleDetailIn 220ms cubic-bezier(0.23, 1, 0.32, 1) both;
+        }
+        @keyframes circleDetailIn {
+          from { opacity: 0; transform: translate(-50%, 7px); }
+          to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        .circle-detail-meta {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          margin-bottom: 8px;
+          color: #35C9CE;
+          font: 700 10px/1.2 'DM Sans', sans-serif;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+        .circle-project-detail h3 {
+          margin: 0 0 7px;
+          color: #292928;
+          font: 700 clamp(1rem, 2vw, 1.35rem)/1.2 'Sora', sans-serif;
+        }
+        .circle-project-detail p {
+          display: -webkit-box;
+          margin: 0 0 12px;
+          overflow: hidden;
+          color: #5B5D5C;
+          font: 400 12px/1.55 'DM Sans', sans-serif;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+        }
+        .circle-detail-bottom {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 14px;
+        }
+        .circle-detail-tags {
+          display: flex;
+          gap: 5px;
+          overflow: hidden;
+        }
+        .circle-detail-tags span {
+          padding: 4px 8px;
+          border-radius: 100px;
+          color: #5B5D5C;
+          background: #E8EDED;
+          font: 500 9px/1 'DM Sans', sans-serif;
+          white-space: nowrap;
+        }
+        .circle-project-detail a {
+          flex: 0 0 auto;
+          color: #292928;
+          font: 700 10px/1 'DM Sans', sans-serif;
+          text-decoration: none;
+          text-transform: uppercase;
+        }
+        .circle-arrow {
+          position: absolute;
+          top: 48%;
+          z-index: 60;
+          display: grid;
+          width: 44px;
+          height: 44px;
+          padding: 0;
+          place-items: center;
+          border: 1px solid rgba(81, 210, 214, 0.45);
+          border-radius: 50%;
+          color: #292928;
+          background: rgba(243,245,244,0.9);
+          box-shadow: 0 8px 24px rgba(41,41,40,0.06);
+          backdrop-filter: blur(10px);
+          cursor: pointer;
+          transform: translateY(-50%);
+          transition:
+            transform 140ms cubic-bezier(0.23, 1, 0.32, 1),
+            border-color 180ms ease,
+            background-color 180ms ease;
+        }
+        .circle-arrow.prev { left: 1.5%; }
+        .circle-arrow.next { right: 1.5%; }
+        .circle-arrow:active { transform: translateY(-50%) scale(0.96); }
+        .circle-project-count {
+          position: absolute;
+          right: 0;
+          bottom: 5%;
+          left: 0;
+          z-index: 42;
+          color: #5B5D5C;
+          font: 600 10px/1 'DM Sans', sans-serif;
+          letter-spacing: 0.12em;
+          text-align: center;
+        }
+        .circle-project-hint {
+          position: absolute;
+          top: 47%;
+          left: 50%;
+          z-index: 2;
+          color: rgba(91, 93, 92, 0.72);
+          font: 600 10px/1.4 'DM Sans', sans-serif;
+          letter-spacing: 0.1em;
+          text-align: center;
+          text-transform: uppercase;
+          transform: translate(-50%, -50%);
+          pointer-events: none;
+        }
+        @media (hover: hover) and (pointer: fine) {
+          .circle-arrow:hover {
+            border-color: #51D2D6;
+            background: #fff;
+          }
+          .circle-project-detail a:hover { color: #35C9CE; }
+        }
+        @media (max-width: 700px) {
+          .project-circle-stage { height: 520px; }
+          .project-orbit-track { inset: 11% 7% 17%; }
+          .circle-project-card.is-active {
+            transform: translate(-50%, -50%) scale(2.55) !important;
+          }
+          .circle-project-detail {
+            top: 57%;
+            width: calc(100% - 72px);
+            padding: 14px 15px;
+          }
+          .circle-project-detail p { font-size: 11px; }
+          .circle-detail-tags span:nth-child(n + 3) { display: none; }
+          .circle-arrow {
+            top: 47%;
+            width: 38px;
+            height: 38px;
+          }
+          .circle-arrow.prev { left: 0; }
+          .circle-arrow.next { right: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .circle-project-card,
+          .circle-project-detail,
+          .circle-arrow {
+            animation: none;
+            transition-duration: 1ms;
+          }
+        }
+      `}</style>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
-        <div style={{ textAlign: "center", marginBottom: 44 }}>
-          <RevealWrapper>
-            <p
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.13em",
-                textTransform: "uppercase",
-                color: "#35C9CE",
-                marginBottom: 10,
-                fontFamily: "'DM Sans', sans-serif",
-              }}
-            >
-              Portfolio
-            </p>
-          </RevealWrapper>
+        <div style={{ textAlign: "center", marginBottom: 4 }}>
           <RevealWrapper delay={80}>
-            <h2
-              style={{
-                fontFamily: "'Sora', sans-serif",
-                fontSize: "clamp(1.7rem, 3vw, 2.3rem)",
-                fontWeight: 700,
-                color: "#292928",
-                marginBottom: 28,
-              }}
-            >
-              Stores & Sites I've Built
-            </h2>
-          </RevealWrapper>
-          <RevealWrapper delay={140}>
             <div
               style={{
                 display: "flex",
@@ -912,7 +1189,7 @@ function ProjectShowcase() {
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => selectTab(tab.id)}
                   style={{
                     padding: "8px 18px",
                     borderRadius: 8,
@@ -934,224 +1211,463 @@ function ProjectShowcase() {
           </RevealWrapper>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            gap: 28,
-          }}
-        >
-          {filtered.map((project, i) => {
-            const gridIndex = DATA.projects.indexOf(project) + 1;
-            return (
-              <RevealWrapper key={project.id} delay={(i % 6) * 60}>
-                <ProjectCard
-                  project={project}
-                  index={i}
-                  gridIndex={gridIndex}
-                />
-              </RevealWrapper>
-            );
-          })}
-        </div>
+        <RevealWrapper>
+          <div
+            className="project-circle-stage"
+            tabIndex={0}
+            role="region"
+            aria-label="Project gallery. Use the previous and next buttons or arrow keys to rotate projects."
+            onKeyDown={(event) => {
+              if (event.key === "ArrowLeft") rotate(-1);
+              if (event.key === "ArrowRight") rotate(1);
+              if (event.key === "Enter" && selectedProject) {
+                openProject(selectedProject, selectedIndex);
+              }
+            }}
+            onMouseLeave={() => {
+              if (!pinned) setSelectedIndex(null);
+            }}
+          >
+            <div className="project-orbit-track" aria-hidden="true" />
+            {!selectedProject && (
+              <div className="circle-project-hint">Hover or tap<br />a project</div>
+            )}
+
+            {filtered.map((project, index) => {
+              const imageIndex = DATA.projects.indexOf(project) + 1;
+              const isSelected = index === selectedIndex;
+              const isFront = index === frontIndex;
+              return (
+                <button
+                  key={project.id}
+                  className={`circle-project-card ${isSelected ? "is-active" : ""} ${isFront ? "is-front" : ""}`}
+                  style={getCardPosition(index)}
+                  onMouseEnter={() => {
+                    setSelectedIndex(index);
+                    setPinned(false);
+                  }}
+                  onFocus={() => {
+                    setSelectedIndex(index);
+                    setPinned(true);
+                  }}
+                  onClick={() => openProject(project, index)}
+                  aria-label={isSelected ? `Open ${project.title}` : `Show ${project.title} details`}
+                >
+                  <img src={`/${imageIndex}.png`} alt="" />
+                  <span aria-hidden="true">↗</span>
+                </button>
+              );
+            })}
+
+            {selectedProject && (
+              <div key={selectedProject.id} className="circle-project-detail">
+                <div className="circle-detail-meta">
+                  <span>{selectedProject.metric}</span>
+                  <span>{String(selectedIndex + 1).padStart(2, "0")} / {String(filtered.length).padStart(2, "0")}</span>
+                </div>
+                <h3>{selectedProject.title}</h3>
+                <p>{selectedProject.description}</p>
+                <div className="circle-detail-bottom">
+                  <div className="circle-detail-tags">
+                    {selectedProject.tags.map((tag) => <span key={tag}>{tag}</span>)}
+                  </div>
+                  <a href={selectedProject.siteUrl} target="_blank" rel="noreferrer">View project ↗</a>
+                </div>
+              </div>
+            )}
+
+            <button className="circle-arrow prev" onClick={() => rotate(-1)} aria-label="Previous project">←</button>
+            <button className="circle-arrow next" onClick={() => rotate(1)} aria-label="Next project">→</button>
+            <div className="circle-project-count" aria-hidden="true">
+              {String((selectedIndex ?? frontIndex) + 1).padStart(2, "0")} — {String(filtered.length).padStart(2, "0")}
+            </div>
+          </div>
+        </RevealWrapper>
       </div>
     </section>
   );
 }
 
-function ProjectCard({ project, index, gridIndex }) {
-  const [hov, setHov] = useState(false);
+function ContinuousOrbitCard({
+  project,
+  imageIndex,
+  index,
+  layer,
+  cardRef,
+  pausedRef,
+  hoveredIndexRef,
+  returnTimerRef,
+  inspectingCardRef,
+}) {
+  const faceScreen = (event) => {
+    window.clearTimeout(returnTimerRef.current);
+    if (
+      inspectingCardRef.current &&
+      inspectingCardRef.current !== event.currentTarget
+    ) {
+      inspectingCardRef.current.classList.remove("is-inspecting");
+    }
 
-  return (
-    <div
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        borderRadius: 20,
-        overflow: "hidden",
-        border: hov
-          ? "1px solid rgba(81,210,214,0.45)"
-          : "1px solid rgba(81,210,214,0.15)",
-        boxShadow: hov
-          ? "0 20px 52px rgba(41,41,40,0.09), 0 0 40px rgba(81,210,214,0.1)"
-          : "0 2px 16px rgba(41,41,40,0.04)",
-        transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)",
-        background: "rgba(243,245,244,0.8)",
-        backdropFilter: "blur(16px)",
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-      }}
-    >
-      {/* Image Section */}
-      <div
-        style={{
-          position: "relative",
-          overflow: "hidden",
-          height: 240,
-        }}
-      >
-        <img
-          src={`/${gridIndex}.png`}
-          alt={`${project.title} preview`}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            display: "block",
-            transition: "transform 0.6s cubic-bezier(0.16,1,0.3,1)",
-            transform: hov ? "scale(1.06)" : "scale(1)",
-          }}
-        />
+    pausedRef.current = true;
+    hoveredIndexRef.current = index;
+    inspectingCardRef.current = event.currentTarget;
+    event.currentTarget.classList.add("is-inspecting");
+  };
 
-        {/* Sliding Shimmer Animation */}
-        <div
-          style={{
-            position: "absolute",
-            top: "-30%",
-            left: 0,
-            width: "35%",
-            height: "160%",
-            background:
-              "linear-gradient(120deg, transparent, rgba(255,255,255,0.25), transparent)",
-            transform: "rotate(15deg)",
-            pointerEvents: "none",
-            animation: "shimmerSweep 6s ease-in-out infinite",
-            animationDelay: `${(index % 6) * 0.6}s`,
-          }}
-        />
+  const resumeOrbit = (event) => {
+    if (hoveredIndexRef.current === index) hoveredIndexRef.current = -1;
+    window.clearTimeout(returnTimerRef.current);
+    const card = event.currentTarget;
+    returnTimerRef.current = window.setTimeout(() => {
+      card.classList.remove("is-inspecting");
+      if (inspectingCardRef.current === card) inspectingCardRef.current = null;
+      if (hoveredIndexRef.current === -1) pausedRef.current = false;
+    }, 220);
+  };
 
-        {/* Top Badge */}
-        <div style={{ position: "absolute", top: 14, left: 14, zIndex: 2 }}>
-          <span
-            style={{
-              fontSize: 10.5,
-              fontWeight: 700,
-              padding: "5px 11px",
-              borderRadius: 100,
-              background: "rgba(255,255,255,0.9)",
-              backdropFilter: "blur(4px)",
-              color: "#292928",
-              fontFamily: "'DM Sans', sans-serif",
-              letterSpacing: "0.05em",
-              textTransform: "uppercase",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-            }}
-          >
-            {project.metric}
-          </span>
+  const cardContents = (
+    <div className="continuous-card-surface">
+      <div className="continuous-card-face continuous-card-front">
+        <img src={`/projects/${imageIndex}.webp`} alt="" />
+        <div className="continuous-card-caption">
+          <span>{project.category}</span>
+          <strong>{project.title}</strong>
+          <small>View project ↗</small>
         </div>
-
-        {/* Bottom Gradient Fade */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 60,
-            background:
-              "linear-gradient(to top, rgba(243,245,244,0.9), transparent)",
-            pointerEvents: "none",
-          }}
-        />
       </div>
-
-      {/* Info Section */}
-      <div
-        style={{
-          padding: "20px 22px 24px",
-          display: "flex",
-          flexDirection: "column",
-          flex: 1,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginBottom: 10,
-          }}
-        >
-          <div
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              background: project.color,
-              flexShrink: 0,
-            }}
-          />
-          <span
-            style={{
-              fontSize: 10.5,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              color: "#5B5D5C",
-              fontFamily: "'DM Sans', sans-serif",
-            }}
-          >
-            {project.metric}
-          </span>
-        </div>
-
-        <h3
-          style={{
-            fontFamily: "'Sora', sans-serif",
-            fontSize: "1.1rem",
-            fontWeight: 700,
-            color: "#292928",
-            marginBottom: 10,
-            lineHeight: 1.3,
-          }}
-        >
-          {project.title}
-        </h3>
-
-        <p
-          style={{
-            fontSize: 13.5,
-            color: "#5B5D5C",
-            lineHeight: 1.65,
-            marginBottom: 18,
-            fontFamily: "'DM Sans', sans-serif",
-            flex: 1,
-          }}
-        >
-          {project.description}
-        </p>
-
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 6,
-            marginBottom: 20,
-          }}
-        >
-          {project.tags.map((tag) => (
-            <span
-              key={tag}
-              style={{
-                fontSize: 11,
-                padding: "4px 11px",
-                borderRadius: 100,
-                background: "#E8EDED",
-                color: "#5B5D5C",
-                fontFamily: "'DM Sans', sans-serif",
-                fontWeight: 500,
-              }}
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        <PrimaryBtn href={project.siteUrl}>{ICONS.globe} View Site</PrimaryBtn>
+      <div className="continuous-card-face continuous-card-back">
+        <span>{String(index + 1).padStart(2, "0")}</span>
+        <strong>MDSR</strong>
+        <small>{project.category}</small>
       </div>
     </div>
+  );
+
+  if (layer === "back") {
+    return (
+      <div ref={cardRef} className="continuous-orbit-card" aria-hidden="true">
+        {cardContents}
+      </div>
+    );
+  }
+
+  return (
+    <a
+      ref={cardRef}
+      className="continuous-orbit-card"
+      href={project.siteUrl}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={`Open ${project.title}`}
+      onMouseEnter={faceScreen}
+      onMouseLeave={resumeOrbit}
+      onFocus={faceScreen}
+      onBlur={resumeOrbit}
+    >
+      {cardContents}
+    </a>
+  );
+}
+
+function ProjectShowcase() {
+  const backCardsRef = useRef([]);
+  const frontCardsRef = useRef([]);
+  const rotationRef = useRef(0);
+  const pausedRef = useRef(false);
+  const frameRef = useRef();
+  const orbitLayerRef = useRef();
+  const orbitBoundsRef = useRef({ width: 1200, height: 820 });
+  const hoveredIndexRef = useRef(-1);
+  const returnTimerRef = useRef();
+  const inspectingCardRef = useRef(null);
+
+  useEffect(() => {
+    let previousTime = 0;
+    const frontInteractionState = [];
+    const frontLayerState = [];
+    const backLayerState = [];
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const resizeObserver = new ResizeObserver(([entry]) => {
+      orbitBoundsRef.current = {
+        width: entry.contentRect.width,
+        height: entry.contentRect.height,
+      };
+    });
+    if (orbitLayerRef.current) resizeObserver.observe(orbitLayerRef.current);
+
+    const renderFrame = (time) => {
+      const delta = previousTime ? Math.min(time - previousTime, 32) : 16;
+      previousTime = time;
+
+      if (!reducedMotion && !pausedRef.current && !document.hidden) {
+        rotationRef.current += delta * 0.00013;
+      }
+
+      DATA.projects.forEach((_, index) => {
+        const angle =
+          (index / DATA.projects.length) * Math.PI * 2 +
+          rotationRef.current;
+        const x = Math.cos(angle) * orbitBoundsRef.current.width * 0.33;
+        const depth = Math.sin(angle);
+        const y = depth * orbitBoundsRef.current.height * 0.23;
+        const scale = 0.72 + (depth + 1) * 0.18;
+        const rawRotationY = 90 - (angle * 180) / Math.PI;
+        const rotationY = ((rawRotationY + 180) % 360 + 360) % 360 - 180;
+        const isInspecting = hoveredIndexRef.current === index;
+        const transform =
+          `translate3d(${x}px, ${y}px, ${depth * 170}px) ` +
+          "translate(-50%, -50%) " +
+          `rotateY(${isInspecting ? 0 : rotationY}deg) ` +
+          `scale(${isInspecting ? scale * 1.48 : scale})`;
+        const frontVisibility = Math.max(0, Math.min(1, (depth + 0.08) * 7));
+        const backVisibility = Math.max(0, Math.min(0.68, (-depth + 0.08) * 4));
+        const frontCard = frontCardsRef.current[index];
+        const backCard = backCardsRef.current[index];
+
+        if (frontCard) {
+          frontCard.style.opacity = String(frontVisibility);
+          frontCard.style.transform = transform;
+          const layer = isInspecting ? 100 : 20 + Math.round(depth * 10);
+          if (frontLayerState[index] !== layer) {
+            frontCard.style.zIndex = String(layer);
+            frontLayerState[index] = layer;
+          }
+          const isInteractive = depth > 0.03;
+          if (frontInteractionState[index] !== isInteractive) {
+            frontCard.style.pointerEvents = isInteractive ? "auto" : "none";
+            frontCard.tabIndex = isInteractive ? 0 : -1;
+            frontInteractionState[index] = isInteractive;
+          }
+        }
+
+        if (backCard) {
+          backCard.style.opacity = String(backVisibility);
+          backCard.style.transform = transform;
+          const layer = 10 + Math.round(depth * 8);
+          if (backLayerState[index] !== layer) {
+            backCard.style.zIndex = String(layer);
+            backLayerState[index] = layer;
+          }
+        }
+      });
+
+      frameRef.current = window.requestAnimationFrame(renderFrame);
+    };
+
+    frameRef.current = window.requestAnimationFrame(renderFrame);
+    return () => {
+      resizeObserver.disconnect();
+      window.cancelAnimationFrame(frameRef.current);
+    };
+  }, []);
+
+  return (
+    <>
+      <style>{`
+        .hero-copy-layer {
+          position: relative;
+          z-index: 15;
+        }
+        .hero-orbit-layer {
+          position: absolute;
+          inset: 0;
+          transform-style: preserve-3d;
+          perspective: 1100px;
+          pointer-events: none;
+        }
+        .hero-orbit-back { z-index: 5; }
+        .hero-orbit-front { z-index: 25; }
+        .hero-orbit-track {
+          position: absolute;
+          top: 33%;
+          right: 16.5%;
+          bottom: 21%;
+          left: 16.5%;
+          border: 1px solid rgba(81, 210, 214, 0.17);
+          border-radius: 50%;
+          box-shadow: inset 0 0 90px rgba(81, 210, 214, 0.025);
+        }
+        .hero-orbit-track::after {
+          content: '';
+          position: absolute;
+          inset: 12% 5%;
+          border: 1px dashed rgba(81, 210, 214, 0.07);
+          border-radius: inherit;
+        }
+        .continuous-orbit-card {
+          position: absolute;
+          top: 56%;
+          left: 50%;
+          width: clamp(88px, 9.4vw, 140px);
+          aspect-ratio: 16 / 9;
+          color: inherit;
+          text-decoration: none;
+          transform-style: preserve-3d;
+          will-change: transform, opacity;
+        }
+        .hero-orbit-front .continuous-orbit-card {
+          pointer-events: auto;
+        }
+        .hero-orbit-front .continuous-orbit-card.is-inspecting {
+          transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .continuous-card-surface {
+          position: absolute;
+          inset: 0;
+          border-radius: 7px;
+          transform-style: preserve-3d;
+          transform-origin: center;
+          transition: filter 180ms ease;
+        }
+        .continuous-card-face {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          border: 1px solid rgba(81, 210, 214, 0.34);
+          border-radius: 7px;
+          background: #E8EDED;
+          box-shadow: 0 9px 25px rgba(41, 41, 40, 0.1);
+          backface-visibility: hidden;
+        }
+        .continuous-card-front img {
+          display: block;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 260ms cubic-bezier(0.23, 1, 0.32, 1), filter 220ms ease;
+        }
+        .continuous-card-back {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 3px;
+          color: #292928;
+          background:
+            radial-gradient(circle at 30% 20%, rgba(255,255,255,0.75), transparent 45%),
+            linear-gradient(135deg, #A1DEE0, #51D2D6);
+          transform: rotateY(180deg);
+        }
+        .continuous-card-back span,
+        .continuous-card-back small {
+          font: 600 7px/1 'DM Sans', sans-serif;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+        .continuous-card-back strong {
+          font: 800 14px/1 'Sora', sans-serif;
+          letter-spacing: -0.05em;
+        }
+        .continuous-card-caption {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          padding: 9px 10px;
+          color: #fff;
+          background: linear-gradient(to top, rgba(20, 24, 24, 0.94), rgba(20,24,24,0.18) 58%, transparent);
+          opacity: 0;
+          transform: translateY(4px);
+          transition: opacity 180ms ease, transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .continuous-card-caption span {
+          margin-bottom: 2px;
+          color: #A1DEE0;
+          font: 700 5px/1 'DM Sans', sans-serif;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+        .continuous-card-caption strong {
+          font: 700 9px/1.15 'Sora', sans-serif;
+        }
+        .continuous-card-caption small {
+          margin-top: 4px;
+          font: 600 5px/1 'DM Sans', sans-serif;
+          text-transform: uppercase;
+        }
+        .hero-orbit-note {
+          position: absolute;
+          bottom: 3.5%;
+          left: 50%;
+          z-index: 70;
+          color: rgba(91,93,92,0.76);
+          font: 600 9px/1 'DM Sans', sans-serif;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          transform: translateX(-50%);
+          pointer-events: none;
+        }
+        @media (hover: hover) and (pointer: fine) {
+          .hero-orbit-front .continuous-orbit-card:hover .continuous-card-surface,
+          .hero-orbit-front .continuous-orbit-card:focus-visible .continuous-card-surface {
+            z-index: 100;
+            filter: drop-shadow(0 18px 24px rgba(41,41,40,0.18));
+          }
+          .hero-orbit-front .continuous-orbit-card:hover .continuous-card-front img,
+          .hero-orbit-front .continuous-orbit-card:focus-visible .continuous-card-front img {
+            transform: scale(1.04);
+            filter: saturate(0.72) brightness(0.72);
+          }
+          .hero-orbit-front .continuous-orbit-card:hover .continuous-card-caption,
+          .hero-orbit-front .continuous-orbit-card:focus-visible .continuous-card-caption {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @media (max-width: 700px) {
+          .hero-orbit-section { min-height: 840px !important; }
+          .continuous-orbit-card { width: clamp(70px, 22vw, 90px); }
+          .hero-orbit-track { top: 36%; right: 16.5%; bottom: 16%; left: 16.5%; }
+          .hero-orbit-note { bottom: 2.5%; font-size: 8px; white-space: nowrap; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .continuous-card-surface,
+          .continuous-card-caption,
+          .continuous-card-front img {
+            transition-duration: 1ms;
+          }
+        }
+      `}</style>
+
+      <div id="projects" className="hero-orbit-layer hero-orbit-back" aria-hidden="true">
+        <div className="hero-orbit-track" />
+        {DATA.projects.map((project, index) => (
+          <ContinuousOrbitCard
+            key={`back-${project.id}`}
+            project={project}
+            imageIndex={index + 1}
+            index={index}
+            layer="back"
+            pausedRef={pausedRef}
+            hoveredIndexRef={hoveredIndexRef}
+            returnTimerRef={returnTimerRef}
+            inspectingCardRef={inspectingCardRef}
+            cardRef={(node) => { backCardsRef.current[index] = node; }}
+          />
+        ))}
+      </div>
+
+      <div ref={orbitLayerRef} className="hero-orbit-layer hero-orbit-front">
+        {DATA.projects.map((project, index) => (
+          <ContinuousOrbitCard
+            key={`front-${project.id}`}
+            project={project}
+            imageIndex={index + 1}
+            index={index}
+            layer="front"
+            pausedRef={pausedRef}
+            hoveredIndexRef={hoveredIndexRef}
+            returnTimerRef={returnTimerRef}
+            inspectingCardRef={inspectingCardRef}
+            cardRef={(node) => { frontCardsRef.current[index] = node; }}
+          />
+        ))}
+        <div className="hero-orbit-note">Hover to inspect · Click to visit · {DATA.projects.length} projects</div>
+      </div>
+    </>
   );
 }
 
@@ -1986,7 +2502,6 @@ export default function App() {
           <Hero />
           <CredStrip />
           <FeaturedResults />
-          <ProjectShowcase />
           <Process />
           <Tech />
           <Testimonials />
