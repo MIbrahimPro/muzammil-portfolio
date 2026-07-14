@@ -1,4 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { Suspense, useState, useEffect, useRef } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Image } from "@react-three/drei";
+import * as THREE from "three";
 
 const DATA = {
   credibilityItems: [
@@ -566,29 +569,68 @@ function Hero() {
       className="hero-orbit-section"
       style={{
         position: "relative",
-        minHeight: "max(820px, 100svh)",
+        minHeight: "100svh",
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "center",
-        padding: "110px 24px 80px",
+        padding: "92px 24px 20px",
         textAlign: "center",
         overflow: "hidden",
         isolation: "isolate",
       }}
     >
+      <style>{`
+        .hero-action-row button,
+        .hero-action-row a {
+          padding: 11px 21px !important;
+          font-size: 13px !important;
+        }
+        @media (max-width: 700px) {
+          .hero-orbit-section {
+            min-height: auto !important;
+            padding: 82px 16px 10px !important;
+          }
+          .hero-copy-layer {
+            width: 100% !important;
+            max-width: 460px !important;
+          }
+          .hero-copy-layer h1 {
+            font-size: clamp(1.75rem, 7.4vw, 2.1rem) !important;
+            line-height: 1.02 !important;
+            letter-spacing: -0.05em !important;
+          }
+          .hero-copy-layer p {
+            max-width: 430px !important;
+            font-size: 0.86rem !important;
+            line-height: 1.45 !important;
+          }
+          .hero-action-row button,
+          .hero-action-row a {
+            padding: 10px 14px !important;
+            font-size: 12px !important;
+          }
+        }
+      `}</style>
       <div style={{ width: "100%", maxWidth: 1200 }}>
-        <ProjectShowcase />
-
-        <div className="hero-copy-layer" style={{ width: "100%", maxWidth: 820, margin: "0 auto" }}>
+        <div
+          className="hero-copy-layer"
+          style={{
+            position: "relative",
+            zIndex: 20,
+            width: "100%",
+            maxWidth: 760,
+            margin: "0 auto",
+          }}
+        >
         <RevealWrapper>
           <div
             style={{
               display: "flex",
               justifyContent: "center",
-              marginBottom: 28,
+              marginBottom: 8,
             }}
           >
-            <div style={{ position: "relative", width: 106, height: 106 }}>
+            <div style={{ position: "relative", width: 60, height: 60 }}>
               <img
                 src="/pfp.jpg"
                 alt="Muzammil"
@@ -611,11 +653,12 @@ function Hero() {
           <h1
             style={{
               fontFamily: "'Sora', sans-serif",
-              fontSize: "clamp(2.2rem, 5.5vw, 4rem)",
+              fontSize: "clamp(2rem, 4.6vw, 3.45rem)",
               fontWeight: 800,
               color: "#292928",
-              lineHeight: 1.13,
-              marginBottom: 22,
+              lineHeight: 1,
+              letterSpacing: "-0.045em",
+              marginBottom: 9,
             }}
           >
             Building Online Stores
@@ -639,11 +682,11 @@ function Hero() {
         <RevealWrapper delay={180}>
           <p
             style={{
-              fontSize: "1.05rem",
+              fontSize: "clamp(0.88rem, 1.2vw, 0.97rem)",
               color: "#5B5D5C",
-              maxWidth: 560,
-              margin: "0 auto 36px",
-              lineHeight: 1.72,
+              maxWidth: 620,
+              margin: "0 auto 16px",
+              lineHeight: 1.45,
               fontFamily: "'DM Sans', sans-serif",
             }}
           >
@@ -654,9 +697,10 @@ function Hero() {
 
         <RevealWrapper delay={260}>
           <div
+            className="hero-action-row"
             style={{
               display: "flex",
-              gap: 14,
+              gap: 10,
               justifyContent: "center",
               flexWrap: "wrap",
             }}
@@ -683,6 +727,7 @@ function Hero() {
         </RevealWrapper>
         </div>
 
+        <ProjectShowcase />
       </div>
     </section>
   );
@@ -1288,386 +1333,320 @@ export function DiscreteProjectShowcase() {
   );
 }
 
-function ContinuousOrbitCard({
-  project,
-  imageIndex,
-  index,
-  layer,
-  cardRef,
-  pausedRef,
-  hoveredIndexRef,
-  returnTimerRef,
-  inspectingCardRef,
-}) {
-  const faceScreen = (event) => {
-    window.clearTimeout(returnTimerRef.current);
-    if (
-      inspectingCardRef.current &&
-      inspectingCardRef.current !== event.currentTarget
-    ) {
-      inspectingCardRef.current.classList.remove("is-inspecting");
-    }
+function OrbitScene({ onHover }) {
+  const cardRefs = useRef([]);
+  const imageRefs = useRef([]);
+  const hoveredIndexRef = useRef(-1);
+  const rotationRef = useRef(0.2);
+  const speedRef = useRef(0.12);
+  const reducedMotionRef = useRef(false);
+  const { camera, size, viewport } = useThree();
+  const compact = size.width < 700;
+  const radiusX = Math.min(compact ? 3 : 6.25, viewport.width * 0.44);
+  const radiusZ = compact ? 1.75 : 2.55;
+  const cardWidth = compact ? 0.82 : 1.12;
+  const cardHeight = cardWidth * 0.625;
 
-    pausedRef.current = true;
+  useEffect(() => {
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updateMotionPreference = () => {
+      reducedMotionRef.current = motionQuery.matches;
+    };
+    updateMotionPreference();
+    motionQuery.addEventListener("change", updateMotionPreference);
+    return () => motionQuery.removeEventListener("change", updateMotionPreference);
+  }, []);
+
+  useFrame((_, delta) => {
+    const hoveredIndex = hoveredIndexRef.current;
+    const targetSpeed = reducedMotionRef.current || hoveredIndex >= 0 ? 0 : 0.12;
+    speedRef.current = THREE.MathUtils.damp(speedRef.current, targetSpeed, 12, delta);
+    rotationRef.current += speedRef.current * delta;
+
+    DATA.projects.forEach((_, index) => {
+      const card = cardRefs.current[index];
+      const image = imageRefs.current[index];
+      if (!card || !image) return;
+
+      const angle =
+        (index / DATA.projects.length) * Math.PI * 2 + rotationRef.current;
+      const depth = (Math.sin(angle) + 1) / 2;
+      const isHovered = hoveredIndex === index;
+      card.userData.hoverOffset = THREE.MathUtils.damp(
+        card.userData.hoverOffset || 0,
+        isHovered ? 0.48 : 0,
+        12,
+        delta,
+      );
+      const hoverOffset = card.userData.hoverOffset;
+
+      card.position.set(
+        Math.cos(angle) * radiusX,
+        hoverOffset * 0.25,
+        Math.sin(angle) * radiusZ + hoverOffset,
+      );
+      card.quaternion.copy(camera.quaternion);
+      const targetScale = isHovered ? 1.42 : 1;
+      const nextScale = THREE.MathUtils.damp(card.scale.x, targetScale, 13, delta);
+      card.scale.setScalar(nextScale);
+      card.renderOrder = isHovered ? 100 : Math.round(depth * 20);
+
+      const material = image.material;
+      material.opacity = THREE.MathUtils.damp(
+        material.opacity,
+        isHovered ? 1 : 0.42 + depth * 0.58,
+        10,
+        delta,
+      );
+      material.grayscale = THREE.MathUtils.damp(
+        material.grayscale || 0,
+        isHovered ? 0 : (1 - depth) * 0.28,
+        10,
+        delta,
+      );
+      material.zoom = THREE.MathUtils.damp(
+        material.zoom || 1,
+        isHovered ? 1.08 : 1,
+        10,
+        delta,
+      );
+    });
+  });
+
+  const setHoveredProject = (index) => {
     hoveredIndexRef.current = index;
-    inspectingCardRef.current = event.currentTarget;
-    event.currentTarget.classList.add("is-inspecting");
+    onHover(index >= 0 ? DATA.projects[index] : null);
   };
-
-  const resumeOrbit = (event) => {
-    if (hoveredIndexRef.current === index) hoveredIndexRef.current = -1;
-    window.clearTimeout(returnTimerRef.current);
-    const card = event.currentTarget;
-    returnTimerRef.current = window.setTimeout(() => {
-      card.classList.remove("is-inspecting");
-      if (inspectingCardRef.current === card) inspectingCardRef.current = null;
-      if (hoveredIndexRef.current === -1) pausedRef.current = false;
-    }, 220);
-  };
-
-  const cardContents = (
-    <div className="continuous-card-surface">
-      <div className="continuous-card-face continuous-card-front">
-        <img src={`/projects/${imageIndex}.webp`} alt="" />
-        <div className="continuous-card-caption">
-          <span>{project.category}</span>
-          <strong>{project.title}</strong>
-          <small>View project ↗</small>
-        </div>
-      </div>
-      <div className="continuous-card-face continuous-card-back">
-        <span>{String(index + 1).padStart(2, "0")}</span>
-        <strong>MDSR</strong>
-        <small>{project.category}</small>
-      </div>
-    </div>
-  );
-
-  if (layer === "back") {
-    return (
-      <div ref={cardRef} className="continuous-orbit-card" aria-hidden="true">
-        {cardContents}
-      </div>
-    );
-  }
 
   return (
-    <a
-      ref={cardRef}
-      className="continuous-orbit-card"
-      href={project.siteUrl}
-      target="_blank"
-      rel="noreferrer"
-      aria-label={`Open ${project.title}`}
-      onMouseEnter={faceScreen}
-      onMouseLeave={resumeOrbit}
-      onFocus={faceScreen}
-      onBlur={resumeOrbit}
-    >
-      {cardContents}
-    </a>
+    <>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} scale={[radiusX, radiusZ, 1]} position={[0, -0.035, 0]}>
+        <ringGeometry args={[0.992, 1, 160]} />
+        <meshBasicMaterial
+          color="#51D2D6"
+          opacity={0.2}
+          transparent
+          side={THREE.DoubleSide}
+          depthWrite={false}
+        />
+      </mesh>
+
+      {DATA.projects.map((project, index) => (
+        <group
+          key={project.id}
+          ref={(node) => { cardRefs.current[index] = node; }}
+          scale={1}
+        >
+          <mesh position={[0, 0, -0.012]} scale={[cardWidth + 0.055, cardHeight + 0.055, 1]}>
+            <planeGeometry />
+            <meshBasicMaterial color="#D8E1DF" opacity={0.9} transparent />
+          </mesh>
+          <Image
+            ref={(node) => { imageRefs.current[index] = node; }}
+            url={`/projects/${index + 1}.webp`}
+            scale={[cardWidth, cardHeight]}
+            radius={0.045}
+            transparent
+            toneMapped={false}
+            onPointerOver={(event) => {
+              event.stopPropagation();
+              setHoveredProject(index);
+            }}
+            onPointerOut={(event) => {
+              event.stopPropagation();
+              if (hoveredIndexRef.current === index) setHoveredProject(-1);
+            }}
+            onClick={(event) => {
+              event.stopPropagation();
+              window.open(project.siteUrl, "_blank", "noopener,noreferrer");
+            }}
+          />
+        </group>
+      ))}
+    </>
   );
 }
 
 function ProjectShowcase() {
-  const backCardsRef = useRef([]);
-  const frontCardsRef = useRef([]);
-  const rotationRef = useRef(0);
-  const pausedRef = useRef(false);
-  const frameRef = useRef();
-  const orbitLayerRef = useRef();
-  const orbitBoundsRef = useRef({ width: 1200, height: 820 });
-  const hoveredIndexRef = useRef(-1);
-  const returnTimerRef = useRef();
-  const inspectingCardRef = useRef(null);
-
-  useEffect(() => {
-    let previousTime = 0;
-    const frontInteractionState = [];
-    const frontLayerState = [];
-    const backLayerState = [];
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    const resizeObserver = new ResizeObserver(([entry]) => {
-      orbitBoundsRef.current = {
-        width: entry.contentRect.width,
-        height: entry.contentRect.height,
-      };
-    });
-    if (orbitLayerRef.current) resizeObserver.observe(orbitLayerRef.current);
-
-    const renderFrame = (time) => {
-      const delta = previousTime ? Math.min(time - previousTime, 32) : 16;
-      previousTime = time;
-
-      if (!reducedMotion && !pausedRef.current && !document.hidden) {
-        rotationRef.current += delta * 0.00013;
-      }
-
-      DATA.projects.forEach((_, index) => {
-        const angle =
-          (index / DATA.projects.length) * Math.PI * 2 +
-          rotationRef.current;
-        const x = Math.cos(angle) * orbitBoundsRef.current.width * 0.33;
-        const depth = Math.sin(angle);
-        const y = depth * orbitBoundsRef.current.height * 0.23;
-        const scale = 0.72 + (depth + 1) * 0.18;
-        const rawRotationY = 90 - (angle * 180) / Math.PI;
-        const rotationY = ((rawRotationY + 180) % 360 + 360) % 360 - 180;
-        const isInspecting = hoveredIndexRef.current === index;
-        const transform =
-          `translate3d(${x}px, ${y}px, ${depth * 170}px) ` +
-          "translate(-50%, -50%) " +
-          `rotateY(${isInspecting ? 0 : rotationY}deg) ` +
-          `scale(${isInspecting ? scale * 1.48 : scale})`;
-        const frontVisibility = Math.max(0, Math.min(1, (depth + 0.08) * 7));
-        const backVisibility = Math.max(0, Math.min(0.68, (-depth + 0.08) * 4));
-        const frontCard = frontCardsRef.current[index];
-        const backCard = backCardsRef.current[index];
-
-        if (frontCard) {
-          frontCard.style.opacity = String(frontVisibility);
-          frontCard.style.transform = transform;
-          const layer = isInspecting ? 100 : 20 + Math.round(depth * 10);
-          if (frontLayerState[index] !== layer) {
-            frontCard.style.zIndex = String(layer);
-            frontLayerState[index] = layer;
-          }
-          const isInteractive = depth > 0.03;
-          if (frontInteractionState[index] !== isInteractive) {
-            frontCard.style.pointerEvents = isInteractive ? "auto" : "none";
-            frontCard.tabIndex = isInteractive ? 0 : -1;
-            frontInteractionState[index] = isInteractive;
-          }
-        }
-
-        if (backCard) {
-          backCard.style.opacity = String(backVisibility);
-          backCard.style.transform = transform;
-          const layer = 10 + Math.round(depth * 8);
-          if (backLayerState[index] !== layer) {
-            backCard.style.zIndex = String(layer);
-            backLayerState[index] = layer;
-          }
-        }
-      });
-
-      frameRef.current = window.requestAnimationFrame(renderFrame);
-    };
-
-    frameRef.current = window.requestAnimationFrame(renderFrame);
-    return () => {
-      resizeObserver.disconnect();
-      window.cancelAnimationFrame(frameRef.current);
-    };
-  }, []);
+  const [hoveredProject, setHoveredProject] = useState(null);
 
   return (
-    <>
+    <div
+      id="projects"
+      className="reference-orbit-stage"
+      role="region"
+      aria-label={`${DATA.projects.length} selected ecommerce projects in an interactive gallery`}
+    >
       <style>{`
-        .hero-copy-layer {
+        .reference-orbit-stage {
           position: relative;
-          z-index: 15;
+          z-index: 5;
+          width: min(1380px, calc(100% + 48px));
+          height: clamp(370px, min(44vw, 53svh), 510px);
+          margin: -80px -24px -30px;
         }
-        .hero-orbit-layer {
+        .reference-orbit-canvas {
+          position: absolute !important;
+          inset: 0;
+          touch-action: pan-y;
+        }
+        .reference-orbit-status {
+          position: absolute;
+          bottom: 7%;
+          left: 50%;
+          z-index: 20;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) 34px;
+          align-items: center;
+          gap: 14px;
+          min-width: 220px;
+          padding: 10px 10px 10px 14px;
+          border: 1px solid rgba(32,34,33,0.1);
+          border-radius: 14px;
+          color: #202221;
+          background: rgba(255,255,255,0.88);
+          box-shadow: 0 14px 40px rgba(32,34,33,0.11);
+          backdrop-filter: blur(16px);
+          opacity: 0;
+          visibility: hidden;
+          transform: translate(-50%, 6px);
+          transition:
+            opacity 160ms ease,
+            transform 180ms cubic-bezier(0.23, 1, 0.32, 1),
+            visibility 0s linear 180ms;
+          pointer-events: none;
+          white-space: nowrap;
+        }
+        .reference-orbit-status[data-active='true'] {
+          opacity: 1;
+          visibility: visible;
+          transform: translate(-50%, 0);
+          transition-delay: 0s;
+        }
+        .reference-orbit-status-copy {
+          min-width: 0;
+          text-align: left;
+        }
+        .reference-orbit-status-category {
+          display: block;
+          color: #35AEB3;
+          font: 700 8px/1 'DM Sans', sans-serif;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+        }
+        .reference-orbit-status strong {
+          display: block;
+          margin-top: 5px;
+          overflow: hidden;
+          font: 700 12px/1.1 'Sora', sans-serif;
+          letter-spacing: -0.02em;
+          text-overflow: ellipsis;
+        }
+        .reference-orbit-status-action {
+          display: grid;
+          width: 34px;
+          height: 34px;
+          place-items: center;
+          border-radius: 9px;
+          color: #202221;
+          background: #51D2D6;
+          font: 700 14px/1 'DM Sans', sans-serif;
+        }
+        .orbit-accessible-links {
           position: absolute;
           inset: 0;
-          transform-style: preserve-3d;
-          perspective: 1100px;
+          z-index: 60;
           pointer-events: none;
         }
-        .hero-orbit-back { z-index: 5; }
-        .hero-orbit-front { z-index: 25; }
-        .hero-orbit-track {
+        .orbit-accessible-links a {
           position: absolute;
-          top: 33%;
-          right: 16.5%;
-          bottom: 21%;
-          left: 16.5%;
-          border: 1px solid rgba(81, 210, 214, 0.17);
-          border-radius: 50%;
-          box-shadow: inset 0 0 90px rgba(81, 210, 214, 0.025);
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border: 0;
         }
-        .hero-orbit-track::after {
-          content: '';
-          position: absolute;
-          inset: 12% 5%;
-          border: 1px dashed rgba(81, 210, 214, 0.07);
-          border-radius: inherit;
-        }
-        .continuous-orbit-card {
-          position: absolute;
-          top: 56%;
+        .orbit-accessible-links a:focus-visible {
+          bottom: 7%;
           left: 50%;
-          width: clamp(88px, 9.4vw, 140px);
-          aspect-ratio: 16 / 9;
-          color: inherit;
-          text-decoration: none;
-          transform-style: preserve-3d;
-          will-change: transform, opacity;
-        }
-        .hero-orbit-front .continuous-orbit-card {
+          width: auto;
+          height: auto;
+          padding: 10px 14px;
+          overflow: visible;
+          clip: auto;
+          border: 1px solid #51D2D6;
+          border-radius: 100px;
+          color: #202221;
+          background: #fff;
+          font: 650 11px/1 'DM Sans', sans-serif;
+          transform: translateX(-50%);
           pointer-events: auto;
         }
-        .hero-orbit-front .continuous-orbit-card.is-inspecting {
-          transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        .continuous-card-surface {
-          position: absolute;
-          inset: 0;
-          border-radius: 7px;
-          transform-style: preserve-3d;
-          transform-origin: center;
-          transition: filter 180ms ease;
-        }
-        .continuous-card-face {
-          position: absolute;
-          inset: 0;
-          overflow: hidden;
-          border: 1px solid rgba(81, 210, 214, 0.34);
-          border-radius: 7px;
-          background: #E8EDED;
-          box-shadow: 0 9px 25px rgba(41, 41, 40, 0.1);
-          backface-visibility: hidden;
-        }
-        .continuous-card-front img {
-          display: block;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: transform 260ms cubic-bezier(0.23, 1, 0.32, 1), filter 220ms ease;
-        }
-        .continuous-card-back {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 3px;
-          color: #292928;
-          background:
-            radial-gradient(circle at 30% 20%, rgba(255,255,255,0.75), transparent 45%),
-            linear-gradient(135deg, #A1DEE0, #51D2D6);
-          transform: rotateY(180deg);
-        }
-        .continuous-card-back span,
-        .continuous-card-back small {
-          font: 600 7px/1 'DM Sans', sans-serif;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-        }
-        .continuous-card-back strong {
-          font: 800 14px/1 'Sora', sans-serif;
-          letter-spacing: -0.05em;
-        }
-        .continuous-card-caption {
-          position: absolute;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-end;
-          padding: 9px 10px;
-          color: #fff;
-          background: linear-gradient(to top, rgba(20, 24, 24, 0.94), rgba(20,24,24,0.18) 58%, transparent);
-          opacity: 0;
-          transform: translateY(4px);
-          transition: opacity 180ms ease, transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        .continuous-card-caption span {
-          margin-bottom: 2px;
-          color: #A1DEE0;
-          font: 700 5px/1 'DM Sans', sans-serif;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-        }
-        .continuous-card-caption strong {
-          font: 700 9px/1.15 'Sora', sans-serif;
-        }
-        .continuous-card-caption small {
-          margin-top: 4px;
-          font: 600 5px/1 'DM Sans', sans-serif;
-          text-transform: uppercase;
-        }
-        .hero-orbit-note {
-          position: absolute;
-          bottom: 3.5%;
-          left: 50%;
-          z-index: 70;
-          color: rgba(91,93,92,0.76);
-          font: 600 9px/1 'DM Sans', sans-serif;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          transform: translateX(-50%);
-          pointer-events: none;
-        }
-        @media (hover: hover) and (pointer: fine) {
-          .hero-orbit-front .continuous-orbit-card:hover .continuous-card-surface,
-          .hero-orbit-front .continuous-orbit-card:focus-visible .continuous-card-surface {
-            z-index: 100;
-            filter: drop-shadow(0 18px 24px rgba(41,41,40,0.18));
+        @media (max-width: 760px) {
+          .reference-orbit-stage {
+            left: 50%;
+            width: 100vw;
+            height: clamp(380px, 54svh, 440px);
+            margin: -44px 0 -8px;
+            transform: translateX(-50%);
           }
-          .hero-orbit-front .continuous-orbit-card:hover .continuous-card-front img,
-          .hero-orbit-front .continuous-orbit-card:focus-visible .continuous-card-front img {
-            transform: scale(1.04);
-            filter: saturate(0.72) brightness(0.72);
-          }
-          .hero-orbit-front .continuous-orbit-card:hover .continuous-card-caption,
-          .hero-orbit-front .continuous-orbit-card:focus-visible .continuous-card-caption {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @media (max-width: 700px) {
-          .hero-orbit-section { min-height: 840px !important; }
-          .continuous-orbit-card { width: clamp(70px, 22vw, 90px); }
-          .hero-orbit-track { top: 36%; right: 16.5%; bottom: 16%; left: 16.5%; }
-          .hero-orbit-note { bottom: 2.5%; font-size: 8px; white-space: nowrap; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .continuous-card-surface,
-          .continuous-card-caption,
-          .continuous-card-front img {
-            transition-duration: 1ms;
+          .reference-orbit-status {
+            bottom: 6%;
+            max-width: calc(100vw - 48px);
           }
         }
       `}</style>
 
-      <div id="projects" className="hero-orbit-layer hero-orbit-back" aria-hidden="true">
-        <div className="hero-orbit-track" />
-        {DATA.projects.map((project, index) => (
-          <ContinuousOrbitCard
-            key={`back-${project.id}`}
-            project={project}
-            imageIndex={index + 1}
-            index={index}
-            layer="back"
-            pausedRef={pausedRef}
-            hoveredIndexRef={hoveredIndexRef}
-            returnTimerRef={returnTimerRef}
-            inspectingCardRef={inspectingCardRef}
-            cardRef={(node) => { backCardsRef.current[index] = node; }}
-          />
-        ))}
+      <Canvas
+        className="reference-orbit-canvas"
+        dpr={[1, 1.5]}
+        camera={{
+          position: [0, 4.8, 9.4],
+          rotation: [-0.472, 0, 0],
+          fov: 40,
+          near: 0.1,
+          far: 40,
+        }}
+        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        onPointerMissed={() => setHoveredProject(null)}
+        style={{ cursor: hoveredProject ? "pointer" : "default" }}
+      >
+        <Suspense fallback={null}>
+          <OrbitScene onHover={setHoveredProject} />
+        </Suspense>
+      </Canvas>
+
+      <div
+        className="reference-orbit-status"
+        data-active={Boolean(hoveredProject)}
+        aria-live="polite"
+        aria-hidden={!hoveredProject}
+      >
+        {hoveredProject && (
+          <>
+            <span className="reference-orbit-status-copy">
+              <span className="reference-orbit-status-category">
+                {hoveredProject.category} project
+              </span>
+              <strong>{hoveredProject.title}</strong>
+            </span>
+            <span className="reference-orbit-status-action" aria-hidden="true">
+              ↗
+            </span>
+          </>
+        )}
       </div>
 
-      <div ref={orbitLayerRef} className="hero-orbit-layer hero-orbit-front">
-        {DATA.projects.map((project, index) => (
-          <ContinuousOrbitCard
-            key={`front-${project.id}`}
-            project={project}
-            imageIndex={index + 1}
-            index={index}
-            layer="front"
-            pausedRef={pausedRef}
-            hoveredIndexRef={hoveredIndexRef}
-            returnTimerRef={returnTimerRef}
-            inspectingCardRef={inspectingCardRef}
-            cardRef={(node) => { frontCardsRef.current[index] = node; }}
-          />
+      <div className="orbit-accessible-links">
+        {DATA.projects.map((project) => (
+          <a key={project.id} href={project.siteUrl} target="_blank" rel="noreferrer">
+            View {project.title}
+          </a>
         ))}
-        <div className="hero-orbit-note">Hover to inspect · Click to visit · {DATA.projects.length} projects</div>
       </div>
-    </>
+    </div>
   );
 }
 
