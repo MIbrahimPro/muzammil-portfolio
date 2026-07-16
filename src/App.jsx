@@ -296,8 +296,8 @@ function RevealWrapper({ children, delay = 0, style: extraStyle = {} }) {
       ref={ref}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(36px)",
-        transition: `opacity 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
+        transform: visible ? "translateY(0) scale(1)" : "translateY(60px) scale(0.96)",
+        transition: `all 1.1s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
         ...extraStyle,
       }}
     >
@@ -448,20 +448,24 @@ function Nav() {
             background: "none",
             border: "none",
             cursor: "pointer",
-            fontFamily: "'Sora', sans-serif",
-            fontWeight: 700,
-            fontSize: 19,
-            backgroundImage:
-              "linear-gradient(135deg, #35C9CE, #51D2D6, #A1DEE0)",
-            backgroundSize: "200% 200%",
-            animation: "gradientFlow 7s ease infinite",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
             flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
+          aria-label="Home"
         >
-          Muzammil
+          <img
+            src="/logo.jpeg"
+            alt="Muzammil Logo"
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: "50%",
+              objectFit: "cover",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
+            }}
+          />
         </button>
 
         <div
@@ -589,6 +593,7 @@ function Hero() {
           .hero-orbit-section {
             min-height: auto !important;
             padding: 82px 16px 10px !important;
+            text-align: left !important;
           }
           .hero-copy-layer {
             width: 100% !important;
@@ -598,11 +603,17 @@ function Hero() {
             font-size: clamp(1.75rem, 7.4vw, 2.1rem) !important;
             line-height: 1.02 !important;
             letter-spacing: -0.05em !important;
+            text-align: left !important;
           }
           .hero-copy-layer p {
             max-width: 430px !important;
             font-size: 0.86rem !important;
             line-height: 1.45 !important;
+            text-align: left !important;
+            margin-left: 0 !important;
+          }
+          .hero-action-row {
+            justify-content: flex-start !important;
           }
           .hero-action-row button,
           .hero-action-row a {
@@ -611,44 +622,17 @@ function Hero() {
           }
         }
       `}</style>
-      <div style={{ width: "100%", maxWidth: 1200 }}>
+      <div style={{ width: "100%", maxWidth: 1440, margin: "0 auto" }}>
         <div
           className="hero-copy-layer"
           style={{
             position: "relative",
             zIndex: 20,
             width: "100%",
-            maxWidth: 760,
+            maxWidth: 860,
             margin: "0 auto",
           }}
         >
-        <RevealWrapper>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginBottom: 8,
-            }}
-          >
-            <div style={{ position: "relative", width: 60, height: 60 }}>
-              <img
-                src="/pfp.jpg"
-                alt="Muzammil"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  display: "block",
-                  animation: "floatEl 6s ease-in-out infinite",
-                  boxShadow: "0 8px 24px rgba(81,210,214,0.2)",
-                  border: "3px solid rgba(81,210,214,0.2)",
-                }}
-              />
-            </div>
-          </div>
-        </RevealWrapper>
-
         <RevealWrapper delay={90}>
           <h1
             style={{
@@ -1220,7 +1204,7 @@ export function DiscreteProjectShowcase() {
           }
         }
       `}</style>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
+      <div style={{ maxWidth: 1440, margin: "0 auto", padding: "0 24px" }}>
         <div style={{ textAlign: "center", marginBottom: 4 }}>
           <RevealWrapper delay={80}>
             <div
@@ -1342,8 +1326,8 @@ function OrbitScene({ onHover }) {
   const reducedMotionRef = useRef(false);
   const { camera, size, viewport } = useThree();
   const compact = size.width < 700;
-  const radiusX = Math.min(compact ? 3 : 6.25, viewport.width * 0.44);
-  const radiusZ = compact ? 1.75 : 2.55;
+  const radiusX = Math.min(compact ? 3.5 : 8.5, viewport.width * 0.55);
+  const radiusZ = compact ? 2.0 : 3.0;
   const cardWidth = compact ? 0.82 : 1.12;
   const cardHeight = cardWidth * 0.625;
 
@@ -1481,9 +1465,15 @@ function ProjectShowcase() {
         .reference-orbit-stage {
           position: relative;
           z-index: 5;
-          width: min(1380px, calc(100% + 48px));
+          width: 100%;
           height: clamp(370px, min(44vw, 53svh), 510px);
-          margin: -80px -24px -30px;
+          margin: -80px auto -30px;
+        }
+        @media (max-width: 700px) {
+          .reference-orbit-stage {
+            width: calc(100% + 48px);
+            margin: -80px -24px -30px;
+          }
         }
         .reference-orbit-canvas {
           position: absolute !important;
@@ -1627,8 +1617,9 @@ function ProjectShowcase() {
         {hoveredProject && (
           <>
             <span className="reference-orbit-status-copy">
-              <span className="reference-orbit-status-category">
+              <span className="reference-orbit-status-category" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                 {hoveredProject.category} project
+                <span style={{ color: '#FFD700', fontSize: '11px', marginLeft: '2px' }}>★★★★★</span>
               </span>
               <strong>{hoveredProject.title}</strong>
             </span>
@@ -1972,7 +1963,7 @@ function Testimonials() {
           "linear-gradient(180deg, transparent, rgba(81,210,214,0.03), transparent)",
       }}
     >
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1440, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 52 }}>
           <RevealWrapper>
             <p
@@ -2034,13 +2025,13 @@ function TestimonialCard({ t }) {
         background: "rgba(243,245,244,0.75)",
         backdropFilter: "blur(16px)",
         border: hov
-          ? "1px solid rgba(81,210,214,0.42)"
+          ? "1px solid rgba(81,210,214,0.6)"
           : "1px solid rgba(81,210,214,0.18)",
         borderRadius: 18,
         padding: "22px",
-        transform: hov ? "translateY(-4px)" : "translateY(0)",
-        boxShadow: hov ? "0 12px 40px rgba(41,41,40,0.07)" : "none",
-        transition: "all 0.34s cubic-bezier(0.16,1,0.3,1)",
+        transform: hov ? "translateY(-8px) scale(1.02)" : "translateY(0) scale(1)",
+        boxShadow: hov ? "0 20px 48px rgba(81,210,214,0.15)" : "none",
+        transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
       }}
     >
       {t.hasVideo && (
@@ -2481,12 +2472,129 @@ export default function App() {
           <Hero />
           <CredStrip />
           <FeaturedResults />
-          <Process />
+          <PortfolioCards />
           <Tech />
           <Testimonials />
+          <Process />
           <CTASection />
         </div>
       </main>
     </>
+  );
+}
+
+// ─── Portfolio Cards ─────────────────────────────────────────────────────────
+
+function PortfolioCards() {
+  const [hoveredCard, setHoveredCard] = useState(null);
+  
+  return (
+    <section
+      id="portfolio"
+      style={{
+        padding: "80px 24px",
+        background: "transparent",
+        position: "relative",
+        zIndex: 5,
+      }}
+    >
+      <div style={{ maxWidth: 1440, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 52 }}>
+          <RevealWrapper>
+            <p
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.13em",
+                textTransform: "uppercase",
+                color: "#35C9CE",
+                marginBottom: 10,
+                fontFamily: "'DM Sans', sans-serif",
+              }}
+            >
+              Portfolio
+            </p>
+          </RevealWrapper>
+          <RevealWrapper delay={80}>
+            <h2
+              style={{
+                fontFamily: "'Sora', sans-serif",
+                fontSize: "clamp(1.7rem, 3vw, 2.3rem)",
+                fontWeight: 700,
+                color: "#292928",
+              }}
+            >
+              Selected Works
+            </h2>
+          </RevealWrapper>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
+            gap: 32,
+          }}
+        >
+          {DATA.projects.map((project, index) => {
+            const isHovered = hoveredCard === index;
+            return (
+              <RevealWrapper key={project.id} delay={index * 50}>
+                <a
+                  href={project.siteUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  onMouseEnter={() => setHoveredCard(index)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  style={{
+                    display: "block",
+                    textDecoration: "none",
+                    color: "inherit",
+                    background: "rgba(255,255,255,0.6)",
+                    backdropFilter: "blur(12px)",
+                    border: "1px solid rgba(255,255,255,0.4)",
+                    borderRadius: 20,
+                    overflow: "hidden",
+                    boxShadow: isHovered 
+                      ? "0 24px 48px rgba(81,210,214,0.15)" 
+                      : "0 12px 32px rgba(41,41,40,0.05)",
+                    transform: isHovered ? "translateY(-8px)" : "translateY(0)",
+                    transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                  }}
+                >
+                  <div style={{ width: "100%", aspectRatio: "16/10", overflow: "hidden", position: "relative" }}>
+                    <div style={{ position: "absolute", inset: 0, background: "rgba(81,210,214,0.1)", zIndex: 1 }}></div>
+                    <img
+                      src={`/${index + 1}.png`}
+                      alt={project.title}
+                      style={{ 
+                        width: "100%", 
+                        height: "100%", 
+                        objectFit: "cover", 
+                        transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+                        transform: isHovered ? "scale(1.08)" : "scale(1)"
+                      }}
+                    />
+                  </div>
+                  <div style={{ padding: "28px 24px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: "#35C9CE", textTransform: "uppercase", letterSpacing: "0.08em" }}>{project.category}</span>
+                      <span style={{ fontSize: 16, color: isHovered ? "#35C9CE" : "#A1DEE0", transition: "color 0.3s ease", transform: isHovered ? "translate(2px, -2px)" : "none" }}>↗</span>
+                    </div>
+                    <h3 style={{ fontFamily: "'Sora', sans-serif", fontSize: 22, fontWeight: 700, color: "#292928", marginBottom: 10 }}>{project.title}</h3>
+                    <p style={{ fontSize: 14, lineHeight: 1.6, color: "#666", marginBottom: 20 }}>{project.description}</p>
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      {project.tags.map((tag) => (
+                        <span key={tag} style={{ fontSize: 11, padding: "6px 12px", background: "rgba(81,210,214,0.1)", borderRadius: 100, color: "#35C9CE", fontWeight: 600 }}>{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                </a>
+              </RevealWrapper>
+            );
+          })}
+        </div>
+      </div>
+    </section>
   );
 }
