@@ -1,6 +1,6 @@
 import { Suspense, useState, useEffect, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Image } from "@react-three/drei";
+import { Image, Html } from "@react-three/drei";
 import * as THREE from "three";
 
 const DATA = {
@@ -321,7 +321,7 @@ function PrimaryBtn({ children, onClick, href, type }) {
     borderRadius: 10,
     border: "none",
     cursor: "pointer",
-    fontFamily: "'DM Sans', sans-serif",
+    fontFamily: "'Inter', sans-serif",
     fontSize: 14,
     transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
     transform: hov ? "translateY(-2px)" : "translateY(0)",
@@ -368,7 +368,7 @@ function SecondaryBtn({ children, onClick, href }) {
     borderRadius: 10,
     border: hov ? "1.5px solid #51D2D6" : "1.5px solid #E5E5E5",
     cursor: "pointer",
-    fontFamily: "'DM Sans', sans-serif",
+    fontFamily: "'Inter', sans-serif",
     fontSize: 14,
     transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
     textDecoration: "none",
@@ -402,11 +402,28 @@ function SecondaryBtn({ children, onClick, href }) {
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", fn);
+    const fn = () => {
+      const currentScrollY = window.scrollY;
+      const triggerPoint = window.innerHeight * 1.5 - 20; // Trigger when rotation finishes
+      setScrolled(currentScrollY > triggerPoint);
+      
+      // Hide if scrolling down past 100px, show if scrolling up
+      if (currentScrollY > 100 && currentScrollY > lastScrollY.current) {
+        setHidden(true);
+      } else if (currentScrollY < lastScrollY.current) {
+        setHidden(false);
+      }
+      
+      lastScrollY.current = currentScrollY;
+    };
+    window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
+  
   const go = (id) =>
     document
       .querySelector(id)
@@ -416,30 +433,34 @@ function Nav() {
     <nav
       style={{
         position: "fixed",
-        top: 14,
-        left: "50%",
-        transform: "translateX(-50%)",
+        top: 0,
+        left: 0,
+        right: 0,
         zIndex: 50,
-        width: "fit-content",
+        width: "100%",
         background: scrolled
-          ? "rgba(243,245,244,0.45)"
-          : "rgba(243,245,244,0.22)",
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
-        border: "1px solid rgba(255,255,255,0.35)",
-        borderRadius: "14px",
-        transition: "background 0.3s, border 0.3s",
+          ? "rgba(255, 255, 255, 0.85)"
+          : "transparent",
+        backdropFilter: scrolled ? "blur(32px) saturate(180%)" : "none",
+        WebkitBackdropFilter: scrolled ? "blur(32px) saturate(180%)" : "none",
+        borderBottom: scrolled ? "1px solid rgba(0,0,0,0.06)" : "1px solid transparent",
+        transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
         whiteSpace: "nowrap",
-        boxShadow:
-          "0 4px 24px rgba(81,210,214,0.08), inset 0 1px 0 rgba(255,255,255,0.5)",
+        transform: hidden ? "translateY(-100%)" : "translateY(0)",
+        boxShadow: scrolled 
+          ? "0 10px 40px rgba(0,0,0,0.04)" 
+          : "none",
       }}
     >
       <div
         style={{
-          padding: "12px 36px",
+          padding: "16px 24px",
           display: "flex",
           alignItems: "center",
-          gap: 48,
+          justifyContent: "space-between",
+          maxWidth: "1680px",
+          margin: "0 auto",
+          width: "100%"
         }}
       >
         <button
@@ -452,25 +473,24 @@ function Nav() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            padding: 0,
           }}
           aria-label="Home"
         >
           <img
-            src="/logo.jpeg"
+            src="/logo.png"
             alt="Muzammil Logo"
             style={{
-              width: 44,
-              height: 44,
-              borderRadius: "50%",
-              objectFit: "cover",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
+              width: 48,
+              height: 48,
+              objectFit: "contain",
             }}
           />
         </button>
 
         <div
           className="nav-links"
-          style={{ display: "flex", gap: 36, alignItems: "center" }}
+          style={{ display: "flex", gap: 24, alignItems: "center" }}
         >
           {[
             ["#projects", "Projects"],
@@ -485,13 +505,16 @@ function Nav() {
                 background: "none",
                 border: "none",
                 cursor: "pointer",
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontWeight: 500,
-                color: "#5B5D5C",
-                fontSize: 14,
-                padding: "6px 0",
+                color: "#4A4D4C",
+                fontSize: 13,
+                padding: "8px 4px",
+                letterSpacing: "-0.01em",
+                transition: "color 0.2s"
               }}
-              className="nav-link-btn"
+              onMouseEnter={(e) => e.currentTarget.style.color = "#111"}
+              onMouseLeave={(e) => e.currentTarget.style.color = "#4A4D4C"}
             >
               {label}
             </button>
@@ -502,59 +525,35 @@ function Nav() {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 14,
+            gap: 12,
             flexShrink: 0,
           }}
         >
-          <span
-            className="avail-badge"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 7,
-              background: "rgba(117,198,105,0.12)",
-              color: "#75C669",
-              padding: "6px 13px",
-              borderRadius: 100,
-              fontSize: 12,
-              fontWeight: 600,
-              fontFamily: "'DM Sans', sans-serif",
-            }}
-          >
-            <span
-              style={{
-                width: 7,
-                height: 7,
-                background: "#75C669",
-                borderRadius: "50%",
-                animation: "pulseDot 2s ease-in-out infinite",
-                display: "inline-block",
-              }}
-            />
-            Available
-          </span>
+
           <button
             onClick={() => go("#contact")}
             style={{
-              background: "#51D2D6",
-              color: "#292928",
-              fontWeight: 600,
-              padding: "9px 22px",
-              borderRadius: 9,
-              border: "none",
+              background: "#111",
+              color: "#fff",
+              fontWeight: 500,
+              padding: "10px 20px",
+              borderRadius: "100px",
+              border: "1px solid rgba(255,255,255,0.1)",
               cursor: "pointer",
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "'Inter', sans-serif",
               fontSize: 13,
-              transition: "all 0.3s",
+              transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-2px)";
-              e.currentTarget.style.boxShadow =
-                "0 8px 24px rgba(81,210,214,0.38)";
+              e.currentTarget.style.transform = "scale(1.02)";
+              e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.2)";
+              e.currentTarget.style.background = "#222";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+              e.currentTarget.style.background = "#111";
             }}
           >
             Book Call
@@ -568,26 +567,55 @@ function Nav() {
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 function Hero() {
+  const containerRef = useRef(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!containerRef.current) return;
+      const { top, height } = containerRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const scrollable = height - windowHeight;
+      const scrolled = -top;
+      let progress = scrolled / scrollable;
+      progress = Math.max(0, Math.min(1, progress));
+      setScrollProgress(progress);
+    };
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <section
-      className="hero-orbit-section"
-      style={{
-        position: "relative",
-        minHeight: "100svh",
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "center",
-        padding: "92px 24px 20px",
-        textAlign: "center",
-        overflow: "hidden",
-        isolation: "isolate",
-      }}
-    >
+    <div ref={containerRef} style={{ height: "250vh", position: "relative", zIndex: 20 }}>
+      <section
+        className="hero-orbit-section"
+        style={{
+          position: "sticky",
+          top: 0,
+          height: "100vh",
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "center",
+          padding: "92px 24px 20px",
+          textAlign: "center",
+          overflow: "hidden",
+          isolation: "isolate",
+        }}
+      >
       <style>{`
+        .hero-copy-layer, .hero-description-corner {
+          transform: translateY(var(--parallax-y));
+        }
         .hero-action-row button,
         .hero-action-row a {
           padding: 11px 21px !important;
           font-size: 13px !important;
+        }
+        @media (max-width: 768px) {
+          .nav-links {
+            display: none !important;
+          }
         }
         @media (max-width: 700px) {
           .hero-orbit-section {
@@ -598,22 +626,29 @@ function Hero() {
           .hero-copy-layer {
             width: 100% !important;
             max-width: 460px !important;
+            left: 50% !important;
+            transform: translateX(-50%) translateY(var(--parallax-y)) !important;
+            align-items: center !important;
           }
           .hero-copy-layer h1 {
             font-size: clamp(1.75rem, 7.4vw, 2.1rem) !important;
             line-height: 1.02 !important;
             letter-spacing: -0.05em !important;
-            text-align: left !important;
+            text-align: center !important;
           }
-          .hero-copy-layer p {
-            max-width: 430px !important;
-            font-size: 0.86rem !important;
-            line-height: 1.45 !important;
-            text-align: left !important;
-            margin-left: 0 !important;
+          .hero-description-corner {
+            bottom: 20px !important;
+            right: auto !important;
+            left: 50% !important;
+            transform: translateX(-50%) translateY(var(--parallax-y)) !important;
+            text-align: center !important;
+          }
+          .hero-description-corner p {
+            font-size: 0.85rem !important;
+            margin: 0 auto !important;
           }
           .hero-action-row {
-            justify-content: flex-start !important;
+            justify-content: center !important;
           }
           .hero-action-row button,
           .hero-action-row a {
@@ -622,27 +657,33 @@ function Hero() {
           }
         }
       `}</style>
-      <div style={{ width: "100%", maxWidth: 1440, margin: "0 auto" }}>
+      <div style={{ width: "100%", maxWidth: 1680, margin: "0 auto", height: "100%", position: "relative", "--parallax-y": `${scrollProgress * -160}px` }}>
         <div
           className="hero-copy-layer"
           style={{
-            position: "relative",
+            position: "absolute",
+            top: "40px",
+            left: "0",
             zIndex: 20,
             width: "100%",
-            maxWidth: 860,
-            margin: "0 auto",
+            maxWidth: 600,
+            textAlign: "left",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start"
           }}
         >
         <RevealWrapper delay={90}>
           <h1
             style={{
-              fontFamily: "'Sora', sans-serif",
+              fontFamily: "'Inter', sans-serif",
               fontSize: "clamp(2rem, 4.6vw, 3.45rem)",
               fontWeight: 800,
               color: "#292928",
               lineHeight: 1,
               letterSpacing: "-0.045em",
-              marginBottom: 9,
+              marginBottom: 16,
+              textAlign: "left"
             }}
           >
             Building Online Stores
@@ -656,6 +697,7 @@ function Hero() {
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
+                fontWeight: 400,
               }}
             >
               That Convert & Scale
@@ -664,28 +706,12 @@ function Hero() {
         </RevealWrapper>
 
         <RevealWrapper delay={180}>
-          <p
-            style={{
-              fontSize: "clamp(0.88rem, 1.2vw, 0.97rem)",
-              color: "#5B5D5C",
-              maxWidth: 620,
-              margin: "0 auto 16px",
-              lineHeight: 1.45,
-              fontFamily: "'DM Sans', sans-serif",
-            }}
-          >
-            I design and build custom Shopify, Squarespace, and Webflow sites,
-            from product pages that sell to full storefront launches that scale.
-          </p>
-        </RevealWrapper>
-
-        <RevealWrapper delay={260}>
           <div
             className="hero-action-row"
             style={{
               display: "flex",
               gap: 10,
-              justifyContent: "center",
+              justifyContent: "flex-start",
               flexWrap: "wrap",
             }}
           >
@@ -711,9 +737,39 @@ function Hero() {
         </RevealWrapper>
         </div>
 
-        <ProjectShowcase />
+        <div 
+          className="hero-description-corner" 
+          style={{ 
+            position: "absolute", 
+            bottom: "40px", 
+            right: "0", 
+            zIndex: 30, 
+            textAlign: "right",
+            maxWidth: "320px",
+            width: "100%"
+          }}
+        >
+          <RevealWrapper delay={260}>
+            <p
+              style={{
+                fontSize: "clamp(0.88rem, 1.2vw, 0.97rem)",
+                color: "#5B5D5C",
+                margin: "0 0 0 auto",
+                lineHeight: 1.45,
+                fontFamily: "'Inter', sans-serif",
+                maxWidth: "400px"
+              }}
+            >
+              I design and build custom Shopify, Squarespace, and Webflow sites,
+              from product pages that sell to full storefront launches that scale.
+            </p>
+          </RevealWrapper>
+        </div>
+
+        <ProjectShowcase scrollProgress={scrollProgress} />
       </div>
-    </section>
+      </section>
+    </div>
   );
 }
 
@@ -746,7 +802,7 @@ function CredStrip() {
                 fontWeight: 500,
                 fontSize: 13,
                 color: "#5B5D5C",
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 whiteSpace: "nowrap",
               }}
             >
@@ -775,7 +831,7 @@ function FeaturedResults() {
                 textTransform: "uppercase",
                 color: "#35C9CE",
                 marginBottom: 10,
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "'Inter', sans-serif",
               }}
             >
               Featured Results
@@ -784,7 +840,7 @@ function FeaturedResults() {
           <RevealWrapper delay={90}>
             <h2
               style={{
-                fontFamily: "'Sora', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: "clamp(1.7rem, 3vw, 2.3rem)",
                 fontWeight: 700,
                 color: "#292928",
@@ -839,14 +895,14 @@ function MetricCard({ item, index = 0 }) {
           fontWeight: 500,
           color: "#5B5D5C",
           marginBottom: 8,
-          fontFamily: "'DM Sans', sans-serif",
+          fontFamily: "'Inter', sans-serif",
         }}
       >
         {item.title}
       </p>
       <p
         style={{
-          fontFamily: "'Sora', sans-serif",
+          fontFamily: "'Inter', sans-serif",
           fontSize: "2.5rem",
           fontWeight: 800,
           color: "#292928",
@@ -864,7 +920,7 @@ function MetricCard({ item, index = 0 }) {
           fontSize: 12,
           color: "#35C9CE",
           fontWeight: 500,
-          fontFamily: "'DM Sans', sans-serif",
+          fontFamily: "'Inter', sans-serif",
         }}
       >
         {item.description}
@@ -1041,7 +1097,7 @@ export function DiscreteProjectShowcase() {
           border-radius: 50%;
           color: #292928;
           background: rgba(255,255,255,0.9);
-          font: 700 5px/1 'DM Sans', sans-serif;
+          font: 700 5px/1 'Inter', sans-serif;
           opacity: 0;
           transition: opacity 180ms ease;
         }
@@ -1074,21 +1130,21 @@ export function DiscreteProjectShowcase() {
           gap: 12px;
           margin-bottom: 8px;
           color: #35C9CE;
-          font: 700 10px/1.2 'DM Sans', sans-serif;
+          font: 700 10px/1.2 'Inter', sans-serif;
           letter-spacing: 0.08em;
           text-transform: uppercase;
         }
         .circle-project-detail h3 {
           margin: 0 0 7px;
           color: #292928;
-          font: 700 clamp(1rem, 2vw, 1.35rem)/1.2 'Sora', sans-serif;
+          font: 700 clamp(1rem, 2vw, 1.35rem)/1.2 'Inter', sans-serif;
         }
         .circle-project-detail p {
           display: -webkit-box;
           margin: 0 0 12px;
           overflow: hidden;
           color: #5B5D5C;
-          font: 400 12px/1.55 'DM Sans', sans-serif;
+          font: 400 12px/1.55 'Inter', sans-serif;
           -webkit-box-orient: vertical;
           -webkit-line-clamp: 2;
         }
@@ -1108,13 +1164,13 @@ export function DiscreteProjectShowcase() {
           border-radius: 100px;
           color: #5B5D5C;
           background: #E8EDED;
-          font: 500 9px/1 'DM Sans', sans-serif;
+          font: 500 9px/1 'Inter', sans-serif;
           white-space: nowrap;
         }
         .circle-project-detail a {
           flex: 0 0 auto;
           color: #292928;
-          font: 700 10px/1 'DM Sans', sans-serif;
+          font: 700 10px/1 'Inter', sans-serif;
           text-decoration: none;
           text-transform: uppercase;
         }
@@ -1150,7 +1206,7 @@ export function DiscreteProjectShowcase() {
           left: 0;
           z-index: 42;
           color: #5B5D5C;
-          font: 600 10px/1 'DM Sans', sans-serif;
+          font: 600 10px/1 'Inter', sans-serif;
           letter-spacing: 0.12em;
           text-align: center;
         }
@@ -1160,7 +1216,7 @@ export function DiscreteProjectShowcase() {
           left: 50%;
           z-index: 2;
           color: rgba(91, 93, 92, 0.72);
-          font: 600 10px/1.4 'DM Sans', sans-serif;
+          font: 600 10px/1.4 'Inter', sans-serif;
           letter-spacing: 0.1em;
           text-align: center;
           text-transform: uppercase;
@@ -1226,7 +1282,7 @@ export function DiscreteProjectShowcase() {
                     background:
                       activeTab === tab.id ? "#51D2D6" : "transparent",
                     color: activeTab === tab.id ? "#292928" : "#5B5D5C",
-                    fontFamily: "'DM Sans', sans-serif",
+                    fontFamily: "'Inter', sans-serif",
                     fontWeight: 500,
                     fontSize: 13,
                     cursor: "pointer",
@@ -1317,18 +1373,23 @@ export function DiscreteProjectShowcase() {
   );
 }
 
-function OrbitScene({ onHover }) {
+function OrbitScene({ onHover, scrollProgress }) {
   const cardRefs = useRef([]);
   const imageRefs = useRef([]);
   const hoveredIndexRef = useRef(-1);
-  const rotationRef = useRef(0.2);
-  const speedRef = useRef(0.12);
+  const [activeHover, setActiveHover] = useState(-1);
+  const autoRotationRef = useRef(0.2);
+  const scrollRotationRef = useRef(0);
+  const speedRef = useRef(0.06);
   const reducedMotionRef = useRef(false);
   const { camera, size, viewport } = useThree();
   const compact = size.width < 700;
-  const radiusX = Math.min(compact ? 3.5 : 8.5, viewport.width * 0.55);
-  const radiusZ = compact ? 2.0 : 3.0;
-  const cardWidth = compact ? 0.82 : 1.12;
+  
+  // Diagonal tilted oval (shrunk to fit screen comfortably while keeping overlap)
+  const radiusX = Math.min(compact ? 2.0 : 2.8, viewport.width * 0.22);
+  const radiusY = compact ? 1.0 : 1.3;
+  const radiusZ = compact ? 0.8 : 1.2;
+  const cardWidth = compact ? 1.2 : 1.6;
   const cardHeight = cardWidth * 0.625;
 
   useEffect(() => {
@@ -1343,9 +1404,17 @@ function OrbitScene({ onHover }) {
 
   useFrame((_, delta) => {
     const hoveredIndex = hoveredIndexRef.current;
-    const targetSpeed = reducedMotionRef.current || hoveredIndex >= 0 ? 0 : 0.12;
+    
+    // Auto-rotate slowly
+    const targetSpeed = reducedMotionRef.current || hoveredIndex >= 0 ? 0 : 0.04;
     speedRef.current = THREE.MathUtils.damp(speedRef.current, targetSpeed, 12, delta);
-    rotationRef.current += speedRef.current * delta;
+    autoRotationRef.current += speedRef.current * delta;
+
+    // Scroll rotation (1 revolution)
+    const targetScrollRot = scrollProgress * 1.0 * Math.PI * 2;
+    scrollRotationRef.current = THREE.MathUtils.damp(scrollRotationRef.current, targetScrollRot, 10, delta);
+
+    const totalRotation = autoRotationRef.current + scrollRotationRef.current;
 
     DATA.projects.forEach((_, index) => {
       const card = cardRefs.current[index];
@@ -1353,85 +1422,85 @@ function OrbitScene({ onHover }) {
       if (!card || !image) return;
 
       const angle =
-        (index / DATA.projects.length) * Math.PI * 2 + rotationRef.current;
-      const depth = (Math.sin(angle) + 1) / 2;
+        (index / DATA.projects.length) * Math.PI * 2 + totalRotation;
       const isHovered = hoveredIndex === index;
+      
+      const ovalX = Math.sin(angle) * radiusX;
+      const ovalY = -Math.cos(angle) * radiusY;
+      
+      const tiltAngle = Math.PI / 4; // 45 degrees diagonal tilt (flipped horizontally)
+      const x = ovalX * Math.cos(tiltAngle) - ovalY * Math.sin(tiltAngle);
+      const y = ovalX * Math.sin(tiltAngle) + ovalY * Math.cos(tiltAngle);
+      const z = Math.cos(angle) * radiusZ; 
+
+      // depth value (0 to 1) for shading based on position (front=1, back=0)
+      const depth = (Math.cos(angle) + 1) / 2;
+
+      // Only move z very slightly on hover to ensure it renders on top without breaking perspective
       card.userData.hoverOffset = THREE.MathUtils.damp(
         card.userData.hoverOffset || 0,
-        isHovered ? 0.48 : 0,
-        12,
+        isHovered ? 0.2 : 0,
+        5,
         delta,
       );
-      const hoverOffset = card.userData.hoverOffset;
-
-      card.position.set(
-        Math.cos(angle) * radiusX,
-        hoverOffset * 0.25,
-        Math.sin(angle) * radiusZ + hoverOffset,
-      );
+      
+      card.position.set(x, y, z + card.userData.hoverOffset);
       card.quaternion.copy(camera.quaternion);
-      const targetScale = isHovered ? 1.42 : 1;
-      const nextScale = THREE.MathUtils.damp(card.scale.x, targetScale, 13, delta);
+      
+      // Extreme zoom on hover relies completely on scale now to prevent perspective drift
+      const targetScale = isHovered ? 1.85 : 1;
+      const nextScale = THREE.MathUtils.damp(card.scale.x, targetScale, 6, delta);
       card.scale.setScalar(nextScale);
-      card.renderOrder = isHovered ? 100 : Math.round(depth * 20);
+      
+      // Apply renderOrder directly to the mesh (image) so it actually works!
+      image.renderOrder = isHovered ? 999 : Math.round(depth * 20);
 
       const material = image.material;
-      material.opacity = THREE.MathUtils.damp(
-        material.opacity,
-        isHovered ? 1 : 0.42 + depth * 0.58,
-        10,
-        delta,
-      );
-      material.grayscale = THREE.MathUtils.damp(
-        material.grayscale || 0,
-        isHovered ? 0 : (1 - depth) * 0.28,
-        10,
-        delta,
-      );
-      material.zoom = THREE.MathUtils.damp(
-        material.zoom || 1,
-        isHovered ? 1.08 : 1,
-        10,
-        delta,
-      );
+      material.depthTest = !isHovered;
+      
+      // If any card is hovered, non-hovered cards fade heavily
+      const isAnyHovered = hoveredIndex >= 0;
+      const targetOpacity = isHovered ? 1 : (isAnyHovered ? 0.1 : 0.45 + depth * 0.55);
+      material.opacity = THREE.MathUtils.damp(material.opacity, targetOpacity, 5, delta);
+      
+      const targetGrayscale = isHovered ? 0 : (isAnyHovered ? 1 : (1 - depth) * 0.5);
+      material.grayscale = THREE.MathUtils.damp(material.grayscale || 0, targetGrayscale, 5, delta);
+      
+      material.zoom = THREE.MathUtils.damp(material.zoom || 1, isHovered ? 1.15 : 1, 5, delta);
     });
   });
 
   const setHoveredProject = (index) => {
     hoveredIndexRef.current = index;
+    setActiveHover(index);
     onHover(index >= 0 ? DATA.projects[index] : null);
   };
 
   return (
     <>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} scale={[radiusX, radiusZ, 1]} position={[0, -0.035, 0]}>
-        <ringGeometry args={[0.992, 1, 160]} />
-        <meshBasicMaterial
-          color="#51D2D6"
-          opacity={0.2}
-          transparent
-          side={THREE.DoubleSide}
-          depthWrite={false}
-        />
-      </mesh>
-
+      {/* Center Logo sitting inside the orbit */}
+      <Image 
+        url="/logo.png" 
+        transparent 
+        position={[0, 0, 0]} 
+        scale={0.5} 
+        opacity={0.8}
+        toneMapped={false}
+      />
       {DATA.projects.map((project, index) => (
         <group
           key={project.id}
           ref={(node) => { cardRefs.current[index] = node; }}
           scale={1}
         >
-          <mesh position={[0, 0, -0.012]} scale={[cardWidth + 0.055, cardHeight + 0.055, 1]}>
-            <planeGeometry />
-            <meshBasicMaterial color="#D8E1DF" opacity={0.9} transparent />
-          </mesh>
           <Image
             ref={(node) => { imageRefs.current[index] = node; }}
             url={`/projects/${index + 1}.webp`}
             scale={[cardWidth, cardHeight]}
-            radius={0.045}
+            radius={0}
             transparent
             toneMapped={false}
+            depthTest={activeHover !== index}
             onPointerOver={(event) => {
               event.stopPropagation();
               setHoveredProject(index);
@@ -1445,13 +1514,45 @@ function OrbitScene({ onHover }) {
               window.open(project.siteUrl, "_blank", "noopener,noreferrer");
             }}
           />
+          {activeHover === index && (
+            <Html
+              position={[0, -cardHeight / 2, 0]}
+              center
+              zIndexRange={[100, 0]}
+            >
+              <div
+                style={{
+                  width: "280px",
+                  background: "rgba(255, 255, 255, 0.98)",
+                  padding: "12px 16px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  boxShadow: "0 14px 40px rgba(0,0,0,0.5)",
+                  pointerEvents: "none",
+                  animation: "slideOutTooltip 0.4s cubic-bezier(0.16,1,0.3,1) forwards",
+                  borderRadius: "0",
+                  marginTop: "24px",
+                }}
+              >
+                <span style={{ display: 'flex', flexDirection: 'column', gap: '2px', textAlign: 'left' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '8px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    {project.category} project
+                    <span style={{ color: '#FFD700', fontSize: '8px' }}>★★★★★</span>
+                  </span>
+                  <strong style={{ fontSize: '11px', color: '#111' }}>{project.title}</strong>
+                </span>
+                <span style={{ fontSize: '12px', color: '#111' }}>↗</span>
+              </div>
+            </Html>
+          )}
         </group>
       ))}
     </>
   );
 }
 
-function ProjectShowcase() {
+function ProjectShowcase({ scrollProgress = 0 }) {
   const [hoveredProject, setHoveredProject] = useState(null);
 
   return (
@@ -1461,18 +1562,40 @@ function ProjectShowcase() {
       role="region"
       aria-label={`${DATA.projects.length} selected ecommerce projects in an interactive gallery`}
     >
+      <div 
+        style={{
+          position: "fixed",
+          inset: -3000,
+          background: "rgba(0,0,0,0.5)",
+          opacity: hoveredProject ? 1 : 0,
+          transition: "opacity 0.6s cubic-bezier(0.16,1,0.3,1)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
       <style>{`
+        @keyframes slideOutTooltip {
+          from {
+            transform: translateY(-20px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
         .reference-orbit-stage {
-          position: relative;
+          position: absolute;
+          top: -92px; /* Pull it up out of the padded wrapper so it aligns to the very top of the screen */
+          left: 50%;
           z-index: 5;
-          width: 100%;
-          height: clamp(370px, min(44vw, 53svh), 510px);
-          margin: -80px auto -30px;
+          width: 100vw;
+          height: 100vh;
+          transform: translateX(-50%);
         }
         @media (max-width: 700px) {
           .reference-orbit-stage {
-            width: calc(100% + 48px);
-            margin: -80px -24px -30px;
+            top: -82px;
           }
         }
         .reference-orbit-canvas {
@@ -1520,7 +1643,7 @@ function ProjectShowcase() {
         .reference-orbit-status-category {
           display: block;
           color: #35AEB3;
-          font: 700 8px/1 'DM Sans', sans-serif;
+          font: 700 8px/1 'Inter', sans-serif;
           letter-spacing: 0.12em;
           text-transform: uppercase;
         }
@@ -1528,7 +1651,7 @@ function ProjectShowcase() {
           display: block;
           margin-top: 5px;
           overflow: hidden;
-          font: 700 12px/1.1 'Sora', sans-serif;
+          font: 700 12px/1.1 'Inter', sans-serif;
           letter-spacing: -0.02em;
           text-overflow: ellipsis;
         }
@@ -1540,7 +1663,7 @@ function ProjectShowcase() {
           border-radius: 9px;
           color: #202221;
           background: #51D2D6;
-          font: 700 14px/1 'DM Sans', sans-serif;
+          font: 700 14px/1 'Inter', sans-serif;
         }
         .orbit-accessible-links {
           position: absolute;
@@ -1570,7 +1693,7 @@ function ProjectShowcase() {
           border-radius: 100px;
           color: #202221;
           background: #fff;
-          font: 650 11px/1 'DM Sans', sans-serif;
+          font: 650 11px/1 'Inter', sans-serif;
           transform: translateX(-50%);
           pointer-events: auto;
         }
@@ -1578,8 +1701,9 @@ function ProjectShowcase() {
           .reference-orbit-stage {
             left: 50%;
             width: 100vw;
-            height: clamp(380px, 54svh, 440px);
-            margin: -44px 0 -8px;
+            height: 100vh;
+            margin: 0;
+            top: -82px;
             transform: translateX(-50%);
           }
           .reference-orbit-status {
@@ -1593,8 +1717,8 @@ function ProjectShowcase() {
         className="reference-orbit-canvas"
         dpr={[1, 1.5]}
         camera={{
-          position: [0, 4.8, 9.4],
-          rotation: [-0.472, 0, 0],
+          position: [0, 0, 10],
+          rotation: [0, 0, 0],
           fov: 40,
           near: 0.1,
           far: 40,
@@ -1604,31 +1728,9 @@ function ProjectShowcase() {
         style={{ cursor: hoveredProject ? "pointer" : "default" }}
       >
         <Suspense fallback={null}>
-          <OrbitScene onHover={setHoveredProject} />
+          <OrbitScene onHover={setHoveredProject} scrollProgress={scrollProgress} />
         </Suspense>
       </Canvas>
-
-      <div
-        className="reference-orbit-status"
-        data-active={Boolean(hoveredProject)}
-        aria-live="polite"
-        aria-hidden={!hoveredProject}
-      >
-        {hoveredProject && (
-          <>
-            <span className="reference-orbit-status-copy">
-              <span className="reference-orbit-status-category" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                {hoveredProject.category} project
-                <span style={{ color: '#FFD700', fontSize: '11px', marginLeft: '2px' }}>★★★★★</span>
-              </span>
-              <strong>{hoveredProject.title}</strong>
-            </span>
-            <span className="reference-orbit-status-action" aria-hidden="true">
-              ↗
-            </span>
-          </>
-        )}
-      </div>
 
       <div className="orbit-accessible-links">
         {DATA.projects.map((project) => (
@@ -1755,7 +1857,7 @@ function Process() {
                 textTransform: "uppercase",
                 color: "#35C9CE",
                 marginBottom: 10,
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "'Inter', sans-serif",
               }}
             >
               Process
@@ -1764,7 +1866,7 @@ function Process() {
           <RevealWrapper delay={80}>
             <h2
               style={{
-                fontFamily: "'Sora', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: "clamp(1.7rem, 3vw, 2.3rem)",
                 fontWeight: 700,
                 color: "#292928",
@@ -1836,7 +1938,7 @@ function ProcessStep({ step, index, total }) {
         </div>
         <p
           style={{
-            fontFamily: "'Sora', sans-serif",
+            fontFamily: "'Inter', sans-serif",
             fontWeight: 600,
             fontSize: 14,
             color: "#292928",
@@ -1849,7 +1951,7 @@ function ProcessStep({ step, index, total }) {
           style={{
             fontSize: 11,
             color: "#5B5D5C",
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "'Inter', sans-serif",
           }}
         >
           {step.sub}
@@ -1887,7 +1989,7 @@ function Tech() {
                 textTransform: "uppercase",
                 color: "#35C9CE",
                 marginBottom: 10,
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "'Inter', sans-serif",
               }}
             >
               Tech Stack
@@ -1896,7 +1998,7 @@ function Tech() {
           <RevealWrapper delay={80}>
             <h2
               style={{
-                fontFamily: "'Sora', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: "clamp(1.7rem, 3vw, 2.3rem)",
                 fontWeight: 700,
                 color: "#292928",
@@ -1942,7 +2044,7 @@ function TechPill({ tech }) {
         transform: hov ? "translateY(-3px)" : "translateY(0)",
         boxShadow: hov ? "0 8px 22px rgba(81,210,214,0.16)" : "none",
         transition: "all 0.28s cubic-bezier(0.16,1,0.3,1)",
-        fontFamily: "'DM Sans', sans-serif",
+        fontFamily: "'Inter', sans-serif",
         cursor: "default",
       }}
     >
@@ -1974,7 +2076,7 @@ function Testimonials() {
                 textTransform: "uppercase",
                 color: "#35C9CE",
                 marginBottom: 10,
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "'Inter', sans-serif",
               }}
             >
               Testimonials
@@ -1983,7 +2085,7 @@ function Testimonials() {
           <RevealWrapper delay={80}>
             <h2
               style={{
-                fontFamily: "'Sora', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: "clamp(1.7rem, 3vw, 2.3rem)",
                 fontWeight: 700,
                 color: "#292928",
@@ -2044,7 +2146,7 @@ function TestimonialCard({ t }) {
               borderRadius: 6,
               background: "rgba(81,210,214,0.1)",
               color: "#35C9CE",
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "'Inter', sans-serif",
               letterSpacing: "0.06em",
             }}
           >
@@ -2058,7 +2160,7 @@ function TestimonialCard({ t }) {
           color: "#5B5D5C",
           lineHeight: 1.72,
           marginBottom: 18,
-          fontFamily: "'DM Sans', sans-serif",
+          fontFamily: "'Inter', sans-serif",
           fontStyle: "italic",
         }}
       >
@@ -2077,7 +2179,7 @@ function TestimonialCard({ t }) {
             fontSize: 12,
             fontWeight: 700,
             color: "#292928",
-            fontFamily: "'Sora', sans-serif",
+            fontFamily: "'Inter', sans-serif",
             flexShrink: 0,
           }}
         >
@@ -2086,7 +2188,7 @@ function TestimonialCard({ t }) {
         <div>
           <p
             style={{
-              fontFamily: "'Sora', sans-serif",
+              fontFamily: "'Inter', sans-serif",
               fontWeight: 600,
               fontSize: 13,
               color: "#292928",
@@ -2098,7 +2200,7 @@ function TestimonialCard({ t }) {
             style={{
               fontSize: 11,
               color: "#5B5D5C",
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "'Inter', sans-serif",
             }}
           >
             {t.role}
@@ -2159,7 +2261,7 @@ function CTASection() {
             <div style={{ position: "relative", zIndex: 1 }}>
               <h2
                 style={{
-                  fontFamily: "'Sora', sans-serif",
+                  fontFamily: "'Inter', sans-serif",
                   fontSize: "clamp(1.7rem, 3.5vw, 2.5rem)",
                   fontWeight: 800,
                   color: "#292928",
@@ -2189,7 +2291,7 @@ function CTASection() {
                   maxWidth: 500,
                   margin: "0 auto 32px",
                   lineHeight: 1.72,
-                  fontFamily: "'DM Sans', sans-serif",
+                  fontFamily: "'Inter', sans-serif",
                 }}
               >
                 I help brands launch fast and convert better with custom
@@ -2263,7 +2365,7 @@ function CTASection() {
                       style={{
                         fontSize: 13.5,
                         color: "#5B5D5C",
-                        fontFamily: "'DM Sans', sans-serif",
+                        fontFamily: "'Inter', sans-serif",
                       }}
                     >
                       {item.label}
@@ -2291,6 +2393,119 @@ function CTASection() {
         </RevealWrapper>
       </div>
     </section>
+  );
+}
+
+// ─── Interactive Grid ────────────────────────────────────────────────────────
+
+function InteractiveGrid() {
+  const canvasRef = useRef(null);
+
+  // --- ADJUSTABLE CONFIGURATION VARIABLES ---
+  const config = {
+    dotSpacing: 18,         // The distance between each dot (centers)
+    dotSize: 3,             // The size of the resting dots (small squares)
+    maxBoxSize: 16,         // The max size the dot can grow to (when hovered)
+    activeRadius: 100,      // How close the mouse needs to be to make dots grow
+    fadeSpeed: 0.05,        // How fast the trail fades (higher = faster fade)
+    trailDensity: 2,        // Drop a trail point every X pixels moved
+    dotColor: "rgba(41, 41, 40, 0.06)", // The subtle dark color
+  };
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    let animationFrameId;
+    let width, height;
+
+    const mouse = { x: -1000, y: -1000 };
+    const trail = [];
+
+    const resize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    };
+    window.addEventListener("resize", resize);
+    resize();
+
+    const onMouseMove = (e) => {
+      const dx = e.clientX - mouse.x;
+      const dy = e.clientY - mouse.y;
+      if (Math.sqrt(dx*dx + dy*dy) > config.trailDensity) {
+        trail.push({ x: e.clientX, y: e.clientY, life: 1.0 });
+      }
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      // Update trail
+      for (let i = trail.length - 1; i >= 0; i--) {
+        trail[i].life -= config.fadeSpeed;
+        if (trail[i].life <= 0) trail.splice(i, 1);
+      }
+
+      ctx.fillStyle = config.dotColor;
+
+      const cols = Math.ceil(width / config.dotSpacing);
+      const rows = Math.ceil(height / config.dotSpacing);
+
+      for (let i = 0; i <= cols; i++) {
+        for (let j = 0; j <= rows; j++) {
+          const cx = i * config.dotSpacing;
+          const cy = j * config.dotSpacing;
+
+          let currentSize = config.dotSize;
+
+          // Mouse influence
+          let influence = 0;
+          for (let t = 0; t < trail.length; t++) {
+            const p = trail[t];
+            const dx = cx - p.x;
+            const dy = cy - p.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < config.activeRadius) {
+              const power = (1 - dist / config.activeRadius) * p.life;
+              if (power > influence) influence = power;
+            }
+          }
+
+          if (influence > 0) {
+            currentSize = config.dotSize + influence * (config.maxBoxSize - config.dotSize);
+          }
+
+          ctx.fillRect(cx - currentSize/2, cy - currentSize/2, currentSize, currentSize);
+        }
+      }
+      animationFrameId = requestAnimationFrame(render);
+    };
+    render();
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", onMouseMove);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none",
+        zIndex: 0,
+      }}
+    />
   );
 }
 
@@ -2423,7 +2638,7 @@ export default function App() {
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'DM Sans', sans-serif; background: #F0F4F5; color: #5B5D5C; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background: #F0F4F5; color: #5B5D5C; overflow-x: hidden; }
         #root { width: 100%; }
 
         @keyframes rotateRing { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -2456,9 +2671,7 @@ export default function App() {
           .nav-links { display: none !important; }
           .avail-badge { display: none !important; }
         }
-        @media (max-width: 500px) {
-          nav { margin: 10px 12px 0 !important; }
-        }
+
         @media (prefers-reduced-motion: reduce) {
           * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
         }
@@ -2466,6 +2679,7 @@ export default function App() {
 
       <Nav />
       <main style={{ width: "100%", position: "relative" }}>
+        <InteractiveGrid />
         <BackgroundOrbs />
 
         <div style={{ position: "relative", zIndex: 1 }}>
@@ -2509,7 +2723,7 @@ function PortfolioCards() {
                 textTransform: "uppercase",
                 color: "#35C9CE",
                 marginBottom: 10,
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "'Inter', sans-serif",
               }}
             >
               Portfolio
@@ -2518,7 +2732,7 @@ function PortfolioCards() {
           <RevealWrapper delay={80}>
             <h2
               style={{
-                fontFamily: "'Sora', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: "clamp(1.7rem, 3vw, 2.3rem)",
                 fontWeight: 700,
                 color: "#292928",
@@ -2581,7 +2795,7 @@ function PortfolioCards() {
                       <span style={{ fontSize: 12, fontWeight: 700, color: "#35C9CE", textTransform: "uppercase", letterSpacing: "0.08em" }}>{project.category}</span>
                       <span style={{ fontSize: 16, color: isHovered ? "#35C9CE" : "#A1DEE0", transition: "color 0.3s ease", transform: isHovered ? "translate(2px, -2px)" : "none" }}>↗</span>
                     </div>
-                    <h3 style={{ fontFamily: "'Sora', sans-serif", fontSize: 22, fontWeight: 700, color: "#292928", marginBottom: 10 }}>{project.title}</h3>
+                    <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: 22, fontWeight: 700, color: "#292928", marginBottom: 10 }}>{project.title}</h3>
                     <p style={{ fontSize: 14, lineHeight: 1.6, color: "#666", marginBottom: 20 }}>{project.description}</p>
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                       {project.tags.map((tag) => (
