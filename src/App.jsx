@@ -805,25 +805,48 @@ function CredStrip() {
 
   return (
     <section style={{ padding: "0 24px 60px", position: "relative", zIndex: 25, marginTop: "-40px" }}>
-      <div style={{
+      <style>{`
+        .cred-inner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 40px;
+          padding: 32px 48px;
+        }
+        .cred-brands {
+          display: flex;
+          align-items: center;
+          gap: 40px;
+          flex: 1;
+          justify-content: space-evenly;
+          flex-wrap: wrap;
+        }
+        @media (max-width: 900px) {
+          .cred-inner {
+            flex-direction: column;
+            padding: 32px 24px;
+            gap: 24px;
+            text-align: center;
+          }
+          .cred-brands {
+            gap: 24px;
+            justify-content: center;
+          }
+        }
+      `}</style>
+      <div className="cred-inner" style={{
         maxWidth: 1400,
         margin: "0 auto",
         background: "rgba(255,255,255,0.9)",
         backdropFilter: "blur(20px)",
         borderRadius: 24,
-        padding: "32px 48px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 40,
         boxShadow: "0 12px 40px rgba(0,0,0,0.04)",
         border: "1px solid rgba(255,255,255,1)",
-        flexWrap: "wrap"
       }}>
         <div style={{ fontSize: 13, fontWeight: 600, color: "#6B7280", whiteSpace: "nowrap" }}>
           Trusted by brands around the world
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "40px", flex: 1, justifyContent: "space-evenly", flexWrap: "wrap" }}>
+        <div className="cred-brands">
           {brands.map((brand, i) => (
             <div key={i} style={{ 
               fontWeight: brand.weight, 
@@ -832,7 +855,8 @@ function CredStrip() {
               fontFamily: brand.font,
               letterSpacing: brand.tracking,
               textTransform: brand.transform,
-              opacity: 0.8
+              opacity: 0.8,
+              textAlign: "center"
             }}>
               {brand.name}
             </div>
