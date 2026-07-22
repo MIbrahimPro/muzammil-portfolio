@@ -1525,7 +1525,7 @@ function OrbitScene({ onHover, scrollProgress }) {
   };
 
   return (
-    <>
+    <group position={[compact ? 0 : 3.5, 0, 0]}>
       {/* Center Logo sitting inside the orbit */}
       <Image 
         url="/logo.png" 
@@ -1596,7 +1596,7 @@ function OrbitScene({ onHover, scrollProgress }) {
           )}
         </group>
       ))}
-    </>
+    </group>
   );
 }
 
@@ -1635,10 +1635,11 @@ function ProjectShowcase({ scrollProgress = 0 }) {
         .reference-orbit-stage {
           position: absolute;
           top: -10vh;
-          right: 0;
+          left: 50%;
           z-index: 5;
-          width: 50vw;
+          width: 100vw;
           height: 120vh;
+          transform: translateX(-50%);
         }
         @media (max-width: 900px) {
           .reference-orbit-stage {
