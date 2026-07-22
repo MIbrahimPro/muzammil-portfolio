@@ -1429,13 +1429,22 @@ function OrbitScene({ onHover, scrollProgress }) {
   const speedRef = useRef(0.06);
   const reducedMotionRef = useRef(false);
   const { camera, size, viewport } = useThree();
-  const compact = size.width < 700;
+  const isTablet = size.width <= 900;
+  const isMobile = size.width <= 600;
+
+  const shiftX = isTablet ? 0 : viewport.width * 0.18;
+  const shiftY = isTablet ? -viewport.height * 0.22 : 0;
   
   // Diagonal tilted oval (shrunk to fit screen comfortably while keeping overlap)
-  const radiusX = Math.min(compact ? 2.0 : 2.8, viewport.width * 0.22);
-  const radiusY = compact ? 1.0 : 1.3;
-  const radiusZ = compact ? 0.8 : 1.2;
-  const cardWidth = compact ? 1.2 : 1.6;
+  const radiusX = isMobile 
+    ? viewport.width * 0.35 
+    : isTablet 
+      ? Math.min(3.5, viewport.width * 0.32) 
+      : Math.min(2.8, viewport.width * 0.22);
+      
+  const radiusY = isMobile ? 1.0 : isTablet ? 1.4 : 1.3;
+  const radiusZ = isMobile ? 0.6 : isTablet ? 0.9 : 1.2;
+  const cardWidth = isMobile ? 1.0 : isTablet ? 1.3 : 1.6;
   const cardHeight = cardWidth * 0.625;
 
   useEffect(() => {
@@ -1523,7 +1532,7 @@ function OrbitScene({ onHover, scrollProgress }) {
   };
 
   return (
-    <group position={[compact ? 0 : viewport.width * 0.18, 0, 0]}>
+    <group position={[shiftX, shiftY, 0]}>
       {/* Center Logo sitting inside the orbit */}
       <Image 
         url="/logo.png" 
