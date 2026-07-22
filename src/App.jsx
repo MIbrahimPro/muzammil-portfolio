@@ -825,8 +825,19 @@ function CredStrip() {
   ];
 
   return (
-    <section style={{ padding: "0 24px 60px", position: "relative", zIndex: 25, marginTop: "-40px" }}>
+    <section className="cred-section">
       <style>{`
+        .cred-section {
+          padding: 0 24px 60px;
+          position: relative;
+          z-index: 25;
+          margin-top: -40px;
+        }
+        @media (max-width: 900px) {
+          .cred-section {
+            margin-top: 0px;
+          }
+        }
         .cred-inner {
           display: flex;
           align-items: center;
@@ -1454,7 +1465,7 @@ function OrbitScene({ onHover, scrollProgress }) {
   } else {
     // Tablet/Mobile: Anchor to the bottom edge to prevent overlap on short screens
     shiftX = 0; // Centered horizontally
-    shiftY = (-viewport.height / 2) + radiusY + (isMobile ? 0.8 : 1.5);
+    shiftY = (-viewport.height / 2) + radiusY + (isMobile ? 1.5 : 1.5);
   }
 
   useEffect(() => {
