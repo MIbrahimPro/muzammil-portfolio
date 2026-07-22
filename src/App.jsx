@@ -1525,7 +1525,7 @@ function OrbitScene({ onHover, scrollProgress }) {
   };
 
   return (
-    <group position={[compact ? 0 : 3.5, 0, 0]}>
+    <group position={[compact ? 0 : viewport.width * 0.18, 0, 0]}>
       {/* Center Logo sitting inside the orbit */}
       <Image 
         url="/logo.png" 
