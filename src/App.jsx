@@ -634,9 +634,9 @@ function Hero() {
           }
           .hero-metrics-row {
             display: flex;
-            gap: 24px;
+            gap: 20px;
             margin-top: 40px;
-            justify-content: space-between;
+            justify-content: flex-start;
           }
           .hero-metric {
             display: flex;
@@ -1635,17 +1635,19 @@ function ProjectShowcase({ scrollProgress = 0 }) {
         .reference-orbit-stage {
           position: absolute;
           top: -10vh;
-          right: 0;
+          left: 60%;
           z-index: 5;
-          width: 65vw;
+          width: 100vw;
           height: 120vh;
+          transform: translateX(-50%);
         }
         @media (max-width: 900px) {
           .reference-orbit-stage {
-            right: 0;
+            left: 50%;
             width: 100vw;
             height: 100vh;
             top: 0;
+            transform: translateX(-50%);
           }
         }
         .reference-orbit-canvas {
