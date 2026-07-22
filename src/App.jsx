@@ -626,32 +626,34 @@ function Hero() {
           }
           .hero-canvas-layer {
             position: absolute;
-            top: 0;
-            right: -10%;
-            width: 55%;
-            height: 100%;
+            top: 5%;
+            right: 0%;
+            width: 45%;
+            height: 90%;
             z-index: 10;
           }
           .hero-metrics-row {
             display: flex;
-            gap: 32px;
-            margin-top: 16px;
+            gap: 40px;
+            margin-top: 40px;
           }
           .hero-metric {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
           }
           .hero-metric-icon {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             color: #35C9CE;
+            stroke-width: 1.5;
           }
           .hero-metric-val {
-            font-size: 24px;
+            font-size: 32px;
             font-weight: 800;
             color: #35C9CE;
             font-family: 'Inter', sans-serif;
+            line-height: 1;
           }
           .hero-metric-label {
             font-size: 13px;
@@ -689,31 +691,13 @@ function Hero() {
         <div className="hero-content-wrapper" style={{ "--parallax-y": `${scrollProgress * -160}px` }}>
           <div className="hero-copy-layer">
             <RevealWrapper delay={0}>
-              <div style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "6px 12px",
-                background: "rgba(53, 201, 206, 0.1)",
-                borderRadius: 100,
-                border: "1px solid rgba(53, 201, 206, 0.2)",
-                alignSelf: "flex-start"
-              }}>
-                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#35C9CE" }}></div>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#35C9CE", letterSpacing: "0.05em", textTransform: "uppercase" }}>
-                  E-COMMERCE & WEB DEVELOPMENT
-                </span>
-              </div>
-            </RevealWrapper>
-            
-            <RevealWrapper delay={90}>
               <h1
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "clamp(2.5rem, 4.5vw, 4.2rem)",
+                  fontSize: "clamp(2.5rem, 4.5vw, 4.8rem)",
                   fontWeight: 800,
                   color: "#292928",
-                  lineHeight: 1.05,
+                  lineHeight: 1.02,
                   letterSpacing: "-0.04em",
                   margin: 0
                 }}
@@ -722,12 +706,8 @@ function Hero() {
                 <br />
                 <span
                   style={{
-                    backgroundImage: "linear-gradient(135deg, #35C9CE, #51D2D6, #A1DEE0)",
-                    backgroundSize: "200% 200%",
-                    animation: "gradientFlow 6s ease infinite",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
+                    color: "#35C9CE",
+                    fontWeight: 800,
                   }}
                 >
                   That Convert & Scale
@@ -819,7 +799,7 @@ function CredStrip() {
     { name: "P2S", font: "'Inter', sans-serif", tracking: "-0.04em", weight: 900, transform: "uppercase" },
     { name: "RELENTLESS LABZ", font: "'Inter', sans-serif", tracking: "-0.03em", weight: 800, transform: "uppercase" },
     { name: "SPINE & LABEL", font: "'Inter', sans-serif", tracking: "-0.03em", weight: 800, transform: "uppercase" },
-    { name: "Wild Key", font: "'Caveat', cursive, 'Inter', sans-serif", tracking: "0", weight: 600, transform: "none", size: "26px" },
+    { name: "Wild Key", font: "'Inter', sans-serif", tracking: "-0.02em", weight: 600, transform: "none", size: "22px" },
     { name: "ATMO STREAMS", font: "'Inter', sans-serif", tracking: "-0.02em", weight: 800, transform: "uppercase" },
   ];
 
@@ -835,7 +815,7 @@ function CredStrip() {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-            gap: 40,
+        gap: 40,
         boxShadow: "0 12px 40px rgba(0,0,0,0.04)",
         border: "1px solid rgba(255,255,255,1)",
         flexWrap: "wrap"
@@ -843,7 +823,7 @@ function CredStrip() {
         <div style={{ fontSize: 13, fontWeight: 600, color: "#6B7280", whiteSpace: "nowrap" }}>
           Trusted by brands around the world
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "32px", flex: 1, justifyContent: "space-between", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "40px", flex: 1, justifyContent: "space-evenly", flexWrap: "wrap" }}>
           {brands.map((brand, i) => (
             <div key={i} style={{ 
               fontWeight: brand.weight, 
@@ -870,37 +850,20 @@ function VideoSection() {
     <section style={{ padding: "140px 24px", position: "relative", zIndex: 15 }}>
       <div style={{ maxWidth: 1400, margin: "0 auto", display: "flex", gap: "60px", alignItems: "center", flexWrap: "wrap" }}>
         <div style={{ flex: "1 1 400px" }}>
-          <RevealWrapper>
-            <div style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "6px 12px",
-              background: "rgba(53, 201, 206, 0.1)",
-              borderRadius: 100,
-              border: "1px solid rgba(53, 201, 206, 0.2)",
-              marginBottom: 20
-            }}>
-              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#35C9CE" }}></div>
-              <span style={{ fontSize: 11, fontWeight: 700, color: "#35C9CE", letterSpacing: "0.05em", textTransform: "uppercase" }}>
-                HOW WE CREATE IMPACT
-              </span>
-            </div>
-          </RevealWrapper>
-          <RevealWrapper delay={80}>
+          <RevealWrapper delay={0}>
             <h2 style={{ fontSize: "clamp(2.5rem, 4vw, 3.5rem)", fontWeight: 800, color: "#292928", lineHeight: 1.1, marginBottom: 20, letterSpacing: "-0.04em", fontFamily: "'Inter', sans-serif" }}>
               See How We Build <br />
               <span style={{ color: "#35C9CE" }}>Stores That Scale</span>
             </h2>
           </RevealWrapper>
-          <RevealWrapper delay={160}>
+          <RevealWrapper delay={80}>
             <p style={{ fontSize: "1.125rem", color: "#5B5D5C", lineHeight: 1.6, marginBottom: 40, maxWidth: "500px", fontFamily: "'Inter', sans-serif" }}>
               Watch the walkthrough to see our process, the platforms we work with, and how we turn ideas into high-converting, scalable online stores.
             </p>
           </RevealWrapper>
           
           <div style={{ display: "flex", flexDirection: "column", gap: 32, marginBottom: 40 }}>
-            <RevealWrapper delay={240}>
+            <RevealWrapper delay={160}>
               <div style={{ display: "flex", gap: 16 }}>
                 <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(53, 201, 206, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#35C9CE" }}>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
@@ -912,7 +875,7 @@ function VideoSection() {
               </div>
             </RevealWrapper>
             
-            <RevealWrapper delay={320}>
+            <RevealWrapper delay={240}>
               <div style={{ display: "flex", gap: 16 }}>
                 <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(53, 201, 206, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#35C9CE" }}>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -924,7 +887,7 @@ function VideoSection() {
               </div>
             </RevealWrapper>
             
-            <RevealWrapper delay={400}>
+            <RevealWrapper delay={320}>
               <div style={{ display: "flex", gap: 16 }}>
                 <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(53, 201, 206, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#35C9CE" }}>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
@@ -936,17 +899,10 @@ function VideoSection() {
               </div>
             </RevealWrapper>
           </div>
-          
-          <RevealWrapper delay={480}>
-            <PrimaryBtn onClick={() => document.querySelector("#process")?.scrollIntoView({ behavior: "smooth" })} style={{ padding: "14px 28px", display: "inline-flex", alignItems: "center", gap: 8 }}>
-              View Our Process
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
-            </PrimaryBtn>
-          </RevealWrapper>
         </div>
         
         <div style={{ flex: "1 1 500px" }}>
-          <RevealWrapper delay={300}>
+          <RevealWrapper delay={160}>
             <div style={{ 
               width: "100%", 
               aspectRatio: "16/9", 
@@ -954,19 +910,18 @@ function VideoSection() {
               borderRadius: 24, 
               overflow: "hidden", 
               boxShadow: "0 24px 48px rgba(0,0,0,0.15)",
-              border: "8px solid rgba(255,255,255,0.8)",
               position: "relative"
             }}>
-              <iframe 
+              <video 
                 width="100%" 
                 height="100%" 
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=0" 
-                title="Building Online Stores That Convert & Scale" 
-                frameBorder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen
+                autoPlay 
+                loop 
+                muted 
+                playsInline
                 style={{ objectFit: "cover", width: "100%", height: "100%" }}
-              ></iframe>
+                src="/video.mp4"
+              ></video>
             </div>
           </RevealWrapper>
         </div>
@@ -2760,16 +2715,15 @@ function ProjectCard({ project, index }) {
           display: "block",
           textDecoration: "none",
           color: "inherit",
-          background: "rgba(255,255,255,0.6)",
-          backdropFilter: "blur(12px)",
-          border: "1px solid rgba(255,255,255,0.4)",
+          background: "#fff",
+          border: "1px solid rgba(0,0,0,0.05)",
           borderRadius: 20,
           overflow: "hidden",
           boxShadow: isHovered 
-            ? "0 24px 48px rgba(81,210,214,0.15)" 
-            : "0 12px 32px rgba(41,41,40,0.05)",
-          transform: isHovered ? "translateY(-8px)" : "translateY(0)",
-          transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+            ? "0 20px 40px rgba(0,0,0,0.08)" 
+            : "0 4px 12px rgba(0,0,0,0.03)",
+          transform: isHovered ? "translateY(-6px)" : "translateY(0)",
+          transition: "all 0.3s ease",
         }}
       >
         <div style={{ width: "100%", aspectRatio: "16/10", overflow: "hidden", position: "relative" }}>
