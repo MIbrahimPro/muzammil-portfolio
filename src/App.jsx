@@ -644,12 +644,16 @@ function Hero() {
             align-items: flex-start;
             text-align: left;
           }
+          .hero-metric-val-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+          }
           .hero-metric-icon {
-            width: 36px;
-            height: 36px;
+            width: 24px;
+            height: 24px;
             color: #35C9CE;
-            stroke-width: 2;
-            margin-bottom: 4px;
+            stroke-width: 2.2;
           }
           .hero-metric-val {
             font-size: 32px;
@@ -771,18 +775,24 @@ function Hero() {
             <RevealWrapper delay={360}>
               <div className="hero-metrics-row">
                 <div className="hero-metric">
-                  <svg className="hero-metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                  <span className="hero-metric-val">120+</span>
+                  <div className="hero-metric-val-row">
+                    <svg className="hero-metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    <span className="hero-metric-val">120+</span>
+                  </div>
                   <span className="hero-metric-label">Stores Built</span>
                 </div>
                 <div className="hero-metric">
-                  <svg className="hero-metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                  <span className="hero-metric-val">3x</span>
+                  <div className="hero-metric-val-row">
+                    <svg className="hero-metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                    <span className="hero-metric-val">3x</span>
+                  </div>
                   <span className="hero-metric-label">Avg. Conversion Increase</span>
                 </div>
                 <div className="hero-metric">
-                  <svg className="hero-metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                  <span className="hero-metric-val">35+</span>
+                  <div className="hero-metric-val-row">
+                    <svg className="hero-metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                    <span className="hero-metric-val">35+</span>
+                  </div>
                   <span className="hero-metric-label">Countries Served</span>
                 </div>
               </div>
