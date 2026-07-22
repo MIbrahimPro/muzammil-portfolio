@@ -1651,21 +1651,12 @@ function ProjectShowcase({ scrollProgress = 0 }) {
         }
         .reference-orbit-stage {
           position: absolute;
-          top: -10vh;
+          top: 0;
           left: 50%;
           z-index: 5;
           width: 100vw;
-          height: 120vh;
+          height: 100%;
           transform: translateX(-50%);
-        }
-        @media (max-width: 1100px) {
-          .reference-orbit-stage {
-            left: 50%;
-            width: 100vw;
-            height: 100vh;
-            top: 0;
-            transform: translateX(-50%);
-          }
         }
         .reference-orbit-canvas {
           position: absolute !important;
