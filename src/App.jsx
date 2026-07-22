@@ -705,6 +705,8 @@ function Hero() {
           }
         `}</style>
         
+        <ProjectShowcase scrollProgress={scrollProgress} />
+        
         <div className="hero-content-wrapper" style={{ "--parallax-y": `${scrollProgress * -160}px` }}>
           <div className="hero-copy-layer">
             <RevealWrapper delay={0}>
@@ -803,10 +805,6 @@ function Hero() {
                 </div>
               </div>
             </RevealWrapper>
-          </div>
-          
-          <div className="hero-canvas-layer">
-            <ProjectShowcase scrollProgress={scrollProgress} />
           </div>
         </div>
       </section>
