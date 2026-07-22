@@ -707,7 +707,7 @@ function Hero() {
                 <span
                   style={{
                     color: "#35C9CE",
-                    fontWeight: 800,
+                    fontWeight: 300,
                   }}
                 >
                   That Convert & Scale
@@ -853,7 +853,7 @@ function VideoSection() {
           <RevealWrapper delay={0}>
             <h2 style={{ fontSize: "clamp(2.5rem, 4vw, 3.5rem)", fontWeight: 800, color: "#292928", lineHeight: 1.1, marginBottom: 20, letterSpacing: "-0.04em", fontFamily: "'Inter', sans-serif" }}>
               See How We Build <br />
-              <span style={{ color: "#35C9CE" }}>Stores That Scale</span>
+              <span style={{ color: "#35C9CE", fontWeight: 300 }}>Stores That Scale</span>
             </h2>
           </RevealWrapper>
           <RevealWrapper delay={80}>
