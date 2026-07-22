@@ -611,18 +611,18 @@ function Hero() {
             max-width: 1440px;
             margin: 0 auto;
             height: 100%;
-            padding: 92px 24px 20px;
+            padding: 40px 24px 20px;
             position: relative;
             transform: translateY(var(--parallax-y));
           }
           .hero-copy-layer {
-            width: 55%;
-            max-width: 650px;
+            width: 60%;
+            max-width: 720px;
             text-align: left;
             z-index: 20;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 16px;
           }
           .hero-canvas-layer {
             position: absolute;
@@ -635,7 +635,7 @@ function Hero() {
           .hero-metrics-row {
             display: flex;
             gap: 20px;
-            margin-top: 40px;
+            margin-top: 24px;
             justify-content: flex-start;
           }
           .hero-metric {
@@ -711,7 +711,7 @@ function Hero() {
               <h1
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "clamp(2.5rem, 4.5vw, 4.8rem)",
+                  fontSize: "clamp(2rem, 3.8vw, 4.2rem)",
                   fontWeight: 800,
                   color: "#292928",
                   lineHeight: 1.02,
@@ -1635,7 +1635,7 @@ function ProjectShowcase({ scrollProgress = 0 }) {
         .reference-orbit-stage {
           position: absolute;
           top: -10vh;
-          left: 60%;
+          left: 50%;
           z-index: 5;
           width: 100vw;
           height: 120vh;
