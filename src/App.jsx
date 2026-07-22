@@ -641,6 +641,8 @@ function Hero() {
             display: flex;
             flex-direction: column;
             gap: 12px;
+            align-items: flex-start;
+            text-align: left;
           }
           .hero-metric-icon {
             width: 28px;
@@ -684,6 +686,10 @@ function Hero() {
             .hero-metrics-row {
               justify-content: center;
               flex-wrap: wrap;
+            }
+            .hero-metric {
+              align-items: center;
+              text-align: center;
             }
           }
         `}</style>
