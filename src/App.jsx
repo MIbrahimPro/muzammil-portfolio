@@ -634,8 +634,9 @@ function Hero() {
           }
           .hero-metrics-row {
             display: flex;
-            gap: 40px;
+            gap: 24px;
             margin-top: 40px;
+            justify-content: space-between;
           }
           .hero-metric {
             display: flex;
@@ -643,6 +644,8 @@ function Hero() {
             gap: 12px;
             align-items: flex-start;
             text-align: left;
+            flex: 1;
+            max-width: 150px;
           }
           .hero-metric-val-row {
             display: flex;
@@ -663,9 +666,12 @@ function Hero() {
             line-height: 1;
           }
           .hero-metric-label {
-            font-size: 13px;
+            font-size: 11px;
             color: #5B5D5C;
-            font-weight: 500;
+            font-weight: 600;
+            line-height: 1.4;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
           }
           @media (max-width: 900px) {
             .hero-content-wrapper {
@@ -1628,16 +1634,18 @@ function ProjectShowcase({ scrollProgress = 0 }) {
         }
         .reference-orbit-stage {
           position: absolute;
-          top: -92px; /* Pull it up out of the padded wrapper so it aligns to the very top of the screen */
-          left: 50%;
+          top: -10vh;
+          right: 0;
           z-index: 5;
-          width: 100vw;
-          height: 100vh;
-          transform: translateX(-50%);
+          width: 65vw;
+          height: 120vh;
         }
-        @media (max-width: 700px) {
+        @media (max-width: 900px) {
           .reference-orbit-stage {
-            top: -82px;
+            right: 0;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
           }
         }
         .reference-orbit-canvas {
@@ -1741,12 +1749,11 @@ function ProjectShowcase({ scrollProgress = 0 }) {
         }
         @media (max-width: 760px) {
           .reference-orbit-stage {
-            left: 50%;
+            right: 0;
             width: 100vw;
             height: 100vh;
             margin: 0;
-            top: -82px;
-            transform: translateX(-50%);
+            top: 0;
           }
           .reference-orbit-status {
             bottom: 6%;
