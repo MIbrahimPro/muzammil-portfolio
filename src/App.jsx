@@ -1768,11 +1768,11 @@ function ProjectShowcase({ scrollProgress = 0 }) {
         className="reference-orbit-canvas"
         dpr={[1, 1.5]}
         camera={{
-          position: [0, 0, 10],
+          position: [0, 0, 12.5],
           rotation: [0, 0, 0],
           fov: 40,
           near: 0.1,
-          far: 40,
+          far: 50,
         }}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         onPointerMissed={() => setHoveredProject(null)}
