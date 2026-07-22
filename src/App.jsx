@@ -587,13 +587,13 @@ function Hero() {
   }, []);
 
   return (
-    <div ref={containerRef} style={{ height: "250vh", position: "relative", zIndex: 20 }}>
+    <div ref={containerRef} style={{ height: "max(250vh, 2000px)", position: "relative", zIndex: 20 }}>
       <section
         className="hero-orbit-section"
         style={{
           position: "sticky",
           top: 0,
-          height: "100vh",
+          height: "max(100vh, 850px)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -673,7 +673,7 @@ function Hero() {
             text-transform: uppercase;
             letter-spacing: 0.05em;
           }
-          @media (max-width: 900px) {
+          @media (max-width: 1100px) {
             .hero-content-wrapper {
               flex-direction: column;
               justify-content: flex-start;
@@ -1429,23 +1429,33 @@ function OrbitScene({ onHover, scrollProgress }) {
   const speedRef = useRef(0.06);
   const reducedMotionRef = useRef(false);
   const { camera, size, viewport } = useThree();
-  const isTablet = size.width <= 900;
+  const isTablet = size.width <= 1100;
   const isMobile = size.width <= 600;
 
-  const shiftX = isTablet ? 0 : viewport.width * 0.18;
-  const shiftY = isTablet ? -viewport.height * 0.22 : 0;
-  
-  // Diagonal tilted oval (shrunk to fit screen comfortably while keeping overlap)
+  // Diagonal tilted oval
   const radiusX = isMobile 
-    ? viewport.width * 0.35 
+    ? viewport.width * 0.38 
     : isTablet 
-      ? Math.min(3.5, viewport.width * 0.32) 
-      : Math.min(2.8, viewport.width * 0.22);
+      ? Math.min(3.5, viewport.width * 0.35) 
+      : Math.min(3.0, viewport.width * 0.22);
       
-  const radiusY = isMobile ? 1.0 : isTablet ? 1.4 : 1.3;
-  const radiusZ = isMobile ? 0.6 : isTablet ? 0.9 : 1.2;
-  const cardWidth = isMobile ? 1.0 : isTablet ? 1.3 : 1.6;
+  const radiusY = isMobile ? 1.1 : isTablet ? 1.5 : 1.3;
+  const radiusZ = isMobile ? 0.7 : isTablet ? 1.0 : 1.2;
+  const cardWidth = isMobile ? 1.1 : isTablet ? 1.4 : 1.6;
   const cardHeight = cardWidth * 0.625;
+
+  let shiftX = 0;
+  let shiftY = 0;
+
+  if (!isTablet) {
+    // Desktop: Anchor to the right edge to prevent overlap on square-ish desktop screens
+    shiftX = (viewport.width / 2) - radiusX - 1.0;
+    shiftY = 0; // Centered vertically
+  } else {
+    // Tablet/Mobile: Anchor to the bottom edge to prevent overlap on short screens
+    shiftX = 0; // Centered horizontally
+    shiftY = (-viewport.height / 2) + radiusY + (isMobile ? 0.8 : 1.5);
+  }
 
   useEffect(() => {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -1648,7 +1658,7 @@ function ProjectShowcase({ scrollProgress = 0 }) {
           height: 120vh;
           transform: translateX(-50%);
         }
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
           .reference-orbit-stage {
             left: 50%;
             width: 100vw;
