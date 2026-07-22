@@ -1635,11 +1635,10 @@ function ProjectShowcase({ scrollProgress = 0 }) {
         .reference-orbit-stage {
           position: absolute;
           top: -10vh;
-          left: 47%;
+          right: 0;
           z-index: 5;
-          width: 100vw;
+          width: 50vw;
           height: 120vh;
-          transform: translateX(-50%);
         }
         @media (max-width: 900px) {
           .reference-orbit-stage {
