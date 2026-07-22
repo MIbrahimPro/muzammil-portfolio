@@ -595,179 +595,217 @@ function Hero() {
           top: 0,
           height: "100vh",
           display: "flex",
-          alignItems: "flex-start",
+          alignItems: "center",
           justifyContent: "center",
-          padding: "92px 24px 20px",
-          textAlign: "center",
+          padding: "0",
           overflow: "hidden",
           isolation: "isolate",
         }}
       >
-      <style>{`
-        .hero-copy-layer, .hero-description-corner {
-          transform: translateY(var(--parallax-y));
-        }
-        .hero-action-row button,
-        .hero-action-row a {
-          padding: 11px 21px !important;
-          font-size: 13px !important;
-        }
-        @media (max-width: 768px) {
-          .nav-links {
-            display: none !important;
-          }
-        }
-        @media (max-width: 700px) {
-          .hero-orbit-section {
-            min-height: auto !important;
-            padding: 82px 16px 10px !important;
-            text-align: left !important;
+        <style>{`
+          .hero-content-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            height: 100%;
+            padding: 92px 24px 20px;
+            position: relative;
+            transform: translateY(var(--parallax-y));
           }
           .hero-copy-layer {
-            width: 100% !important;
-            max-width: 460px !important;
-            left: 50% !important;
-            transform: translateX(-50%) translateY(var(--parallax-y)) !important;
-            align-items: center !important;
+            width: 55%;
+            max-width: 650px;
+            text-align: left;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
           }
-          .hero-copy-layer h1 {
-            font-size: clamp(1.75rem, 7.4vw, 2.1rem) !important;
-            line-height: 1.02 !important;
-            letter-spacing: -0.05em !important;
-            text-align: center !important;
+          .hero-canvas-layer {
+            position: absolute;
+            top: 0;
+            right: -10%;
+            width: 55%;
+            height: 100%;
+            z-index: 10;
           }
-          .hero-description-corner {
-            bottom: 20px !important;
-            right: auto !important;
-            left: 50% !important;
-            transform: translateX(-50%) translateY(var(--parallax-y)) !important;
-            text-align: center !important;
+          .hero-metrics-row {
+            display: flex;
+            gap: 32px;
+            margin-top: 16px;
           }
-          .hero-description-corner p {
-            font-size: 0.85rem !important;
-            margin: 0 auto !important;
+          .hero-metric {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
           }
-          .hero-action-row {
-            justify-content: center !important;
+          .hero-metric-icon {
+            width: 24px;
+            height: 24px;
+            color: #35C9CE;
           }
-          .hero-action-row button,
-          .hero-action-row a {
-            padding: 10px 14px !important;
-            font-size: 12px !important;
+          .hero-metric-val {
+            font-size: 24px;
+            font-weight: 800;
+            color: #35C9CE;
+            font-family: 'Inter', sans-serif;
           }
-        }
-      `}</style>
-      <div style={{ width: "100%", maxWidth: 1680, margin: "0 auto", height: "100%", position: "relative", "--parallax-y": `${scrollProgress * -160}px` }}>
-        <div
-          className="hero-copy-layer"
-          style={{
-            position: "absolute",
-            top: "40px",
-            left: "0",
-            zIndex: 20,
-            width: "100%",
-            maxWidth: 600,
-            textAlign: "left",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start"
-          }}
-        >
-        <RevealWrapper delay={90}>
-          <h1
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: "clamp(2rem, 4.6vw, 3.45rem)",
-              fontWeight: 800,
-              color: "#292928",
-              lineHeight: 1,
-              letterSpacing: "-0.045em",
-              marginBottom: 16,
-              textAlign: "left"
-            }}
-          >
-            Building Online Stores
-            <br />
-            <span
-              style={{
-                backgroundImage:
-                  "linear-gradient(135deg, #35C9CE, #51D2D6, #A1DEE0)",
-                backgroundSize: "200% 200%",
-                animation: "gradientFlow 6s ease infinite",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                fontWeight: 400,
-              }}
-            >
-              That Convert & Scale
-            </span>
-          </h1>
-        </RevealWrapper>
+          .hero-metric-label {
+            font-size: 13px;
+            color: #5B5D5C;
+            font-weight: 500;
+          }
+          @media (max-width: 900px) {
+            .hero-content-wrapper {
+              flex-direction: column;
+              justify-content: flex-start;
+              padding-top: 120px;
+            }
+            .hero-copy-layer {
+              width: 100%;
+              align-items: center;
+              text-align: center;
+              max-width: 500px;
+            }
+            .hero-copy-layer h1 {
+              font-size: clamp(2rem, 8vw, 2.5rem) !important;
+            }
+            .hero-canvas-layer {
+              right: 0;
+              width: 100%;
+              top: 50%;
+              height: 50%;
+            }
+            .hero-metrics-row {
+              justify-content: center;
+              flex-wrap: wrap;
+            }
+          }
+        `}</style>
+        
+        <div className="hero-content-wrapper" style={{ "--parallax-y": `${scrollProgress * -160}px` }}>
+          <div className="hero-copy-layer">
+            <RevealWrapper delay={0}>
+              <div style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "6px 12px",
+                background: "rgba(53, 201, 206, 0.1)",
+                borderRadius: 100,
+                border: "1px solid rgba(53, 201, 206, 0.2)",
+                alignSelf: "flex-start"
+              }}>
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#35C9CE" }}></div>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "#35C9CE", letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                  E-COMMERCE & WEB DEVELOPMENT
+                </span>
+              </div>
+            </RevealWrapper>
+            
+            <RevealWrapper delay={90}>
+              <h1
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "clamp(2.5rem, 4.5vw, 4.2rem)",
+                  fontWeight: 800,
+                  color: "#292928",
+                  lineHeight: 1.05,
+                  letterSpacing: "-0.04em",
+                  margin: 0
+                }}
+              >
+                Building Online Stores
+                <br />
+                <span
+                  style={{
+                    backgroundImage: "linear-gradient(135deg, #35C9CE, #51D2D6, #A1DEE0)",
+                    backgroundSize: "200% 200%",
+                    animation: "gradientFlow 6s ease infinite",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
+                >
+                  That Convert & Scale
+                </span>
+              </h1>
+            </RevealWrapper>
+            
+            <RevealWrapper delay={180}>
+              <p
+                style={{
+                  fontSize: "clamp(1rem, 1.1vw, 1.125rem)",
+                  color: "#5B5D5C",
+                  lineHeight: 1.6,
+                  fontFamily: "'Inter', sans-serif",
+                  maxWidth: "540px",
+                  margin: 0
+                }}
+              >
+                I design and build custom Shopify, Squarespace, and Webflow sites,
+                from product pages that sell to full storefront launches that scale.
+              </p>
+            </RevealWrapper>
 
-        <RevealWrapper delay={180}>
-          <div
-            className="hero-action-row"
-            style={{
-              display: "flex",
-              gap: 10,
-              justifyContent: "flex-start",
-              flexWrap: "wrap",
-            }}
-          >
-            <PrimaryBtn
-              onClick={() =>
-                document
-                  .querySelector("#projects")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
-            >
-              View Projects
-            </PrimaryBtn>
-            <SecondaryBtn
-              onClick={() =>
-                document
-                  .querySelector("#contact")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
-            >
-              Book Consultation
-            </SecondaryBtn>
+            <RevealWrapper delay={270}>
+              <div
+                className="hero-action-row"
+                style={{
+                  display: "flex",
+                  gap: 16,
+                  flexWrap: "wrap",
+                }}
+              >
+                <PrimaryBtn
+                  onClick={() =>
+                    document.querySelector("#portfolio")?.scrollIntoView({ behavior: "smooth" })
+                  }
+                  style={{ display: "flex", alignItems: "center", gap: 8, padding: "14px 28px" }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg>
+                  View Projects
+                </PrimaryBtn>
+                <SecondaryBtn
+                  onClick={() =>
+                    document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })
+                  }
+                  style={{ display: "flex", alignItems: "center", gap: 8, padding: "14px 28px", background: "white", border: "1px solid #E5E7EB" }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  Book Consultation
+                </SecondaryBtn>
+              </div>
+            </RevealWrapper>
+            
+            <RevealWrapper delay={360}>
+              <div className="hero-metrics-row">
+                <div className="hero-metric">
+                  <svg className="hero-metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                  <span className="hero-metric-val">120+</span>
+                  <span className="hero-metric-label">Stores Built</span>
+                </div>
+                <div className="hero-metric">
+                  <svg className="hero-metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                  <span className="hero-metric-val">3x</span>
+                  <span className="hero-metric-label">Avg. Conversion Increase</span>
+                </div>
+                <div className="hero-metric">
+                  <svg className="hero-metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                  <span className="hero-metric-val">35+</span>
+                  <span className="hero-metric-label">Countries Served</span>
+                </div>
+              </div>
+            </RevealWrapper>
           </div>
-        </RevealWrapper>
+          
+          <div className="hero-canvas-layer">
+            <ProjectShowcase scrollProgress={scrollProgress} />
+          </div>
         </div>
-
-        <div 
-          className="hero-description-corner" 
-          style={{ 
-            position: "absolute", 
-            bottom: "40px", 
-            right: "0", 
-            zIndex: 30, 
-            textAlign: "right",
-            maxWidth: "320px",
-            width: "100%"
-          }}
-        >
-          <RevealWrapper delay={260}>
-            <p
-              style={{
-                fontSize: "clamp(0.88rem, 1.2vw, 0.97rem)",
-                color: "#5B5D5C",
-                margin: "0 0 0 auto",
-                lineHeight: 1.45,
-                fontFamily: "'Inter', sans-serif",
-                maxWidth: "400px"
-              }}
-            >
-              I design and build custom Shopify, Squarespace, and Webflow sites,
-              from product pages that sell to full storefront launches that scale.
-            </p>
-          </RevealWrapper>
-        </div>
-
-        <ProjectShowcase scrollProgress={scrollProgress} />
-      </div>
       </section>
     </div>
   );
@@ -776,38 +814,48 @@ function Hero() {
 // ─── Cred Strip ───────────────────────────────────────────────────────────────
 
 function CredStrip() {
-  const loopItems = [...DATA.credibilityItems, ...DATA.credibilityItems];
+  const brands = [
+    { name: "HIJABEAZE", font: "'Inter', sans-serif", tracking: "-0.02em", weight: 800, transform: "uppercase" },
+    { name: "P2S", font: "'Inter', sans-serif", tracking: "-0.04em", weight: 900, transform: "uppercase" },
+    { name: "RELENTLESS LABZ", font: "'Inter', sans-serif", tracking: "-0.03em", weight: 800, transform: "uppercase" },
+    { name: "SPINE & LABEL", font: "'Inter', sans-serif", tracking: "-0.03em", weight: 800, transform: "uppercase" },
+    { name: "Wild Key", font: "'Caveat', cursive, 'Inter', sans-serif", tracking: "0", weight: 600, transform: "none", size: "26px" },
+    { name: "ATMO STREAMS", font: "'Inter', sans-serif", tracking: "-0.02em", weight: 800, transform: "uppercase" },
+  ];
+
   return (
-    <section style={{ padding: "12px 0 28px", overflow: "hidden" }}>
-      <div
-        style={{
-          maskImage:
-            "linear-gradient(90deg, transparent, black 8%, black 92%, transparent)",
-          WebkitMaskImage:
-            "linear-gradient(90deg, transparent, black 8%, black 92%, transparent)",
-        }}
-      >
-        <div
-          className="marquee-track"
-          style={{ display: "flex", gap: 10, width: "max-content" }}
-        >
-          {loopItems.map((item, i) => (
-            <span
-              key={i}
-              style={{
-                background: "rgba(243,245,244,0.8)",
-                border: "1px solid rgba(81,210,214,0.2)",
-                padding: "9px 18px",
-                borderRadius: 100,
-                fontWeight: 500,
-                fontSize: 13,
-                color: "#5B5D5C",
-                fontFamily: "'Inter', sans-serif",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {item}
-            </span>
+    <section style={{ padding: "0 24px 60px", position: "relative", zIndex: 25, marginTop: "-40px" }}>
+      <div style={{
+        maxWidth: 1400,
+        margin: "0 auto",
+        background: "rgba(255,255,255,0.9)",
+        backdropFilter: "blur(20px)",
+        borderRadius: 24,
+        padding: "32px 48px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+            gap: 40,
+        boxShadow: "0 12px 40px rgba(0,0,0,0.04)",
+        border: "1px solid rgba(255,255,255,1)",
+        flexWrap: "wrap"
+      }}>
+        <div style={{ fontSize: 13, fontWeight: 600, color: "#6B7280", whiteSpace: "nowrap" }}>
+          Trusted by brands around the world
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "32px", flex: 1, justifyContent: "space-between", flexWrap: "wrap" }}>
+          {brands.map((brand, i) => (
+            <div key={i} style={{ 
+              fontWeight: brand.weight, 
+              fontSize: brand.size || "16px", 
+              color: "#374151",
+              fontFamily: brand.font,
+              letterSpacing: brand.tracking,
+              textTransform: brand.transform,
+              opacity: 0.8
+            }}>
+              {brand.name}
+            </div>
           ))}
         </div>
       </div>
@@ -815,117 +863,115 @@ function CredStrip() {
   );
 }
 
-// ─── Featured Results ─────────────────────────────────────────────────────────
+// ─── Video Section ────────────────────────────────────────────────────────────
 
-function FeaturedResults() {
+function VideoSection() {
   return (
-    <section style={{ padding: "72px 24px" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 48 }}>
+    <section style={{ padding: "140px 24px", position: "relative", zIndex: 15 }}>
+      <div style={{ maxWidth: 1400, margin: "0 auto", display: "flex", gap: "60px", alignItems: "center", flexWrap: "wrap" }}>
+        <div style={{ flex: "1 1 400px" }}>
           <RevealWrapper>
-            <p
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.13em",
-                textTransform: "uppercase",
-                color: "#35C9CE",
-                marginBottom: 10,
-                fontFamily: "'Inter', sans-serif",
-              }}
-            >
-              Featured Results
-            </p>
+            <div style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "6px 12px",
+              background: "rgba(53, 201, 206, 0.1)",
+              borderRadius: 100,
+              border: "1px solid rgba(53, 201, 206, 0.2)",
+              marginBottom: 20
+            }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#35C9CE" }}></div>
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#35C9CE", letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                HOW WE CREATE IMPACT
+              </span>
+            </div>
           </RevealWrapper>
-          <RevealWrapper delay={90}>
-            <h2
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "clamp(1.7rem, 3vw, 2.3rem)",
-                fontWeight: 700,
-                color: "#292928",
-              }}
-            >
-              Measurable Impact
+          <RevealWrapper delay={80}>
+            <h2 style={{ fontSize: "clamp(2.5rem, 4vw, 3.5rem)", fontWeight: 800, color: "#292928", lineHeight: 1.1, marginBottom: 20, letterSpacing: "-0.04em", fontFamily: "'Inter', sans-serif" }}>
+              See How We Build <br />
+              <span style={{ color: "#35C9CE" }}>Stores That Scale</span>
             </h2>
           </RevealWrapper>
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: 18,
-          }}
-        >
-          {DATA.featuredResults.map((item, i) => (
-            <RevealWrapper key={i} delay={i * 70}>
-              <MetricCard item={item} index={i} />
+          <RevealWrapper delay={160}>
+            <p style={{ fontSize: "1.125rem", color: "#5B5D5C", lineHeight: 1.6, marginBottom: 40, maxWidth: "500px", fontFamily: "'Inter', sans-serif" }}>
+              Watch the walkthrough to see our process, the platforms we work with, and how we turn ideas into high-converting, scalable online stores.
+            </p>
+          </RevealWrapper>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: 32, marginBottom: 40 }}>
+            <RevealWrapper delay={240}>
+              <div style={{ display: "flex", gap: 16 }}>
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(53, 201, 206, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#35C9CE" }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                </div>
+                <div>
+                  <h4 style={{ fontSize: 16, fontWeight: 700, color: "#292928", marginBottom: 6, fontFamily: "'Inter', sans-serif" }}>Strategic & Conversion Focused</h4>
+                  <p style={{ fontSize: 14, color: "#5B5D5C", lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>We design with psychology and data to maximize conversions and average order value.</p>
+                </div>
+              </div>
             </RevealWrapper>
-          ))}
+            
+            <RevealWrapper delay={320}>
+              <div style={{ display: "flex", gap: 16 }}>
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(53, 201, 206, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#35C9CE" }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </div>
+                <div>
+                  <h4 style={{ fontSize: 16, fontWeight: 700, color: "#292928", marginBottom: 6, fontFamily: "'Inter', sans-serif" }}>Built for Performance</h4>
+                  <p style={{ fontSize: 14, color: "#5B5D5C", lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>Fast-loading, SEO-optimized, and built with best practices to rank and convert.</p>
+                </div>
+              </div>
+            </RevealWrapper>
+            
+            <RevealWrapper delay={400}>
+              <div style={{ display: "flex", gap: 16 }}>
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(53, 201, 206, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#35C9CE" }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                </div>
+                <div>
+                  <h4 style={{ fontSize: 16, fontWeight: 700, color: "#292928", marginBottom: 6, fontFamily: "'Inter', sans-serif" }}>Scalable & Future-Ready</h4>
+                  <p style={{ fontSize: 14, color: "#5B5D5C", lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>We build stores that grow with your brand, from your first sale to your biggest.</p>
+                </div>
+              </div>
+            </RevealWrapper>
+          </div>
+          
+          <RevealWrapper delay={480}>
+            <PrimaryBtn onClick={() => document.querySelector("#process")?.scrollIntoView({ behavior: "smooth" })} style={{ padding: "14px 28px", display: "inline-flex", alignItems: "center", gap: 8 }}>
+              View Our Process
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+            </PrimaryBtn>
+          </RevealWrapper>
+        </div>
+        
+        <div style={{ flex: "1 1 500px" }}>
+          <RevealWrapper delay={300}>
+            <div style={{ 
+              width: "100%", 
+              aspectRatio: "16/9", 
+              background: "#1A1A1A", 
+              borderRadius: 24, 
+              overflow: "hidden", 
+              boxShadow: "0 24px 48px rgba(0,0,0,0.15)",
+              border: "8px solid rgba(255,255,255,0.8)",
+              position: "relative"
+            }}>
+              <iframe 
+                width="100%" 
+                height="100%" 
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=0" 
+                title="Building Online Stores That Convert & Scale" 
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen
+                style={{ objectFit: "cover", width: "100%", height: "100%" }}
+              ></iframe>
+            </div>
+          </RevealWrapper>
         </div>
       </div>
     </section>
-  );
-}
-
-function MetricCard({ item, index = 0 }) {
-  const [hov, setHov] = useState(false);
-  return (
-    <div
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        background: "rgba(243,245,244,0.75)",
-        backdropFilter: "blur(16px)",
-        border: hov
-          ? "1px solid rgba(81,210,214,0.5)"
-          : "1px solid rgba(81,210,214,0.18)",
-        borderRadius: 18,
-        padding: "26px 22px",
-        transform: hov ? "translateY(-5px)" : "translateY(0)",
-        boxShadow: hov
-          ? "0 14px 44px rgba(41,41,40,0.07), 0 0 28px rgba(81,210,214,0.1)"
-          : "none",
-        transition: "all 0.38s cubic-bezier(0.16,1,0.3,1)",
-      }}
-    >
-      <p
-        style={{
-          fontSize: 12,
-          fontWeight: 500,
-          color: "#5B5D5C",
-          marginBottom: 8,
-          fontFamily: "'Inter', sans-serif",
-        }}
-      >
-        {item.title}
-      </p>
-      <p
-        style={{
-          fontFamily: "'Inter', sans-serif",
-          fontSize: "2.5rem",
-          fontWeight: 800,
-          color: "#292928",
-          lineHeight: 1,
-          marginBottom: 6,
-          display: "inline-block",
-          animation: "numberGlow 3.2s ease-in-out infinite",
-          animationDelay: `${index * 0.3}s`,
-        }}
-      >
-        {item.metric}
-      </p>
-      <p
-        style={{
-          fontSize: 12,
-          color: "#35C9CE",
-          fontWeight: 500,
-          fontFamily: "'Inter', sans-serif",
-        }}
-      >
-        {item.description}
-      </p>
-    </div>
   );
 }
 
@@ -1841,7 +1887,7 @@ function Process() {
     <section
       id="process"
       style={{
-        padding: "80px 24px",
+        padding: "140px 24px",
         background:
           "linear-gradient(180deg, transparent, rgba(81,210,214,0.03), transparent)",
       }}
@@ -1977,7 +2023,7 @@ function ProcessStep({ step, index, total }) {
 
 function Tech() {
   return (
-    <section id="tech" style={{ padding: "80px 24px" }}>
+    <section id="tech" style={{ padding: "140px 24px" }}>
       <div style={{ maxWidth: 860, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 52 }}>
           <RevealWrapper>
@@ -2060,7 +2106,7 @@ function Testimonials() {
     <section
       id="testimonials"
       style={{
-        padding: "80px 24px",
+        padding: "140px 24px",
         background:
           "linear-gradient(180deg, transparent, rgba(81,210,214,0.03), transparent)",
       }}
@@ -2215,7 +2261,7 @@ function TestimonialCard({ t }) {
 
 function CTASection() {
   return (
-    <section id="contact" style={{ padding: "80px 24px" }}>
+    <section id="contact" style={{ padding: "140px 24px" }}>
       <div style={{ maxWidth: 820, margin: "0 auto" }}>
         <RevealWrapper>
           <div
@@ -2685,7 +2731,7 @@ export default function App() {
         <div style={{ position: "relative", zIndex: 1 }}>
           <Hero />
           <CredStrip />
-          <FeaturedResults />
+          <VideoSection />
           <PortfolioCards />
           <Tech />
           <Testimonials />
@@ -2699,14 +2745,71 @@ export default function App() {
 
 // ─── Portfolio Cards ─────────────────────────────────────────────────────────
 
-function PortfolioCards() {
-  const [hoveredCard, setHoveredCard] = useState(null);
+function ProjectCard({ project, index }) {
+  const [isHovered, setIsHovered] = useState(false);
   
+  return (
+    <RevealWrapper delay={index * 50}>
+      <a
+        href={project.siteUrl}
+        target="_blank"
+        rel="noreferrer"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        style={{
+          display: "block",
+          textDecoration: "none",
+          color: "inherit",
+          background: "rgba(255,255,255,0.6)",
+          backdropFilter: "blur(12px)",
+          border: "1px solid rgba(255,255,255,0.4)",
+          borderRadius: 20,
+          overflow: "hidden",
+          boxShadow: isHovered 
+            ? "0 24px 48px rgba(81,210,214,0.15)" 
+            : "0 12px 32px rgba(41,41,40,0.05)",
+          transform: isHovered ? "translateY(-8px)" : "translateY(0)",
+          transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        }}
+      >
+        <div style={{ width: "100%", aspectRatio: "16/10", overflow: "hidden", position: "relative" }}>
+          <div style={{ position: "absolute", inset: 0, background: "rgba(81,210,214,0.1)", zIndex: 1 }}></div>
+          <img
+            src={`/projects/${index + 1}.webp`}
+            alt={project.title}
+            style={{ 
+              width: "100%", 
+              height: "100%", 
+              objectFit: "cover", 
+              transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+              transform: isHovered ? "scale(1.08)" : "scale(1)"
+            }}
+          />
+        </div>
+        <div style={{ padding: "28px 24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: "#35C9CE", textTransform: "uppercase", letterSpacing: "0.08em" }}>{project.category}</span>
+            <span style={{ fontSize: 16, color: isHovered ? "#35C9CE" : "#A1DEE0", transition: "color 0.3s ease", transform: isHovered ? "translate(2px, -2px)" : "none" }}>↗</span>
+          </div>
+          <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: 22, fontWeight: 700, color: "#292928", marginBottom: 10 }}>{project.title}</h3>
+          <p style={{ fontSize: 14, lineHeight: 1.6, color: "#666", marginBottom: 20 }}>{project.description}</p>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {project.tags.map((tag) => (
+              <span key={tag} style={{ fontSize: 11, padding: "6px 12px", background: "rgba(81,210,214,0.1)", borderRadius: 100, color: "#35C9CE", fontWeight: 600 }}>{tag}</span>
+            ))}
+          </div>
+        </div>
+      </a>
+    </RevealWrapper>
+  );
+}
+
+function PortfolioCards() {
   return (
     <section
       id="portfolio"
       style={{
-        padding: "80px 24px",
+        padding: "140px 24px",
         background: "transparent",
         position: "relative",
         zIndex: 5,
@@ -2750,63 +2853,9 @@ function PortfolioCards() {
             gap: 32,
           }}
         >
-          {DATA.projects.map((project, index) => {
-            const isHovered = hoveredCard === index;
-            return (
-              <RevealWrapper key={project.id} delay={index * 50}>
-                <a
-                  href={project.siteUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  onMouseEnter={() => setHoveredCard(index)}
-                  onMouseLeave={() => setHoveredCard(null)}
-                  style={{
-                    display: "block",
-                    textDecoration: "none",
-                    color: "inherit",
-                    background: "rgba(255,255,255,0.6)",
-                    backdropFilter: "blur(12px)",
-                    border: "1px solid rgba(255,255,255,0.4)",
-                    borderRadius: 20,
-                    overflow: "hidden",
-                    boxShadow: isHovered 
-                      ? "0 24px 48px rgba(81,210,214,0.15)" 
-                      : "0 12px 32px rgba(41,41,40,0.05)",
-                    transform: isHovered ? "translateY(-8px)" : "translateY(0)",
-                    transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-                  }}
-                >
-                  <div style={{ width: "100%", aspectRatio: "16/10", overflow: "hidden", position: "relative" }}>
-                    <div style={{ position: "absolute", inset: 0, background: "rgba(81,210,214,0.1)", zIndex: 1 }}></div>
-                    <img
-                      src={`/${index + 1}.png`}
-                      alt={project.title}
-                      style={{ 
-                        width: "100%", 
-                        height: "100%", 
-                        objectFit: "cover", 
-                        transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
-                        transform: isHovered ? "scale(1.08)" : "scale(1)"
-                      }}
-                    />
-                  </div>
-                  <div style={{ padding: "28px 24px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: "#35C9CE", textTransform: "uppercase", letterSpacing: "0.08em" }}>{project.category}</span>
-                      <span style={{ fontSize: 16, color: isHovered ? "#35C9CE" : "#A1DEE0", transition: "color 0.3s ease", transform: isHovered ? "translate(2px, -2px)" : "none" }}>↗</span>
-                    </div>
-                    <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: 22, fontWeight: 700, color: "#292928", marginBottom: 10 }}>{project.title}</h3>
-                    <p style={{ fontSize: 14, lineHeight: 1.6, color: "#666", marginBottom: 20 }}>{project.description}</p>
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                      {project.tags.map((tag) => (
-                        <span key={tag} style={{ fontSize: 11, padding: "6px 12px", background: "rgba(81,210,214,0.1)", borderRadius: 100, color: "#35C9CE", fontWeight: 600 }}>{tag}</span>
-                      ))}
-                    </div>
-                  </div>
-                </a>
-              </RevealWrapper>
-            );
-          })}
+          {DATA.projects.map((project, index) => (
+            <ProjectCard key={project.id} project={project} index={index} />
+          ))}
         </div>
       </div>
     </section>
