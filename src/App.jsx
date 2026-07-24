@@ -600,6 +600,7 @@ function Hero() {
           padding: "0",
           overflow: "hidden",
           isolation: "isolate",
+          background: `linear-gradient(to bottom, transparent 40%, rgba(139, 92, 246, ${0.08 + scrollProgress * 0.25}))`
         }}
       >
         <style>{`
@@ -623,6 +624,7 @@ function Hero() {
             display: flex;
             flex-direction: column;
             gap: 16px;
+            margin-top: -100px;
           }
           .hero-canvas-layer {
             position: absolute;
@@ -968,16 +970,17 @@ function VideoSection() {
               boxShadow: "0 24px 48px rgba(0,0,0,0.15)",
               position: "relative"
             }}>
-              <video 
+              <iframe 
                 width="100%" 
                 height="100%" 
-                autoPlay 
-                loop 
-                muted 
-                playsInline
-                style={{ objectFit: "cover", width: "100%", height: "100%" }}
-                src="/video.mp4"
-              ></video>
+                src="https://www.youtube.com/embed/SCbp6NxfjKs?si=nGzkmZ8GT7M9vGoI" 
+                title="YouTube video player" 
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                referrerPolicy="strict-origin-when-cross-origin" 
+                allowFullScreen
+                style={{ position: "absolute", top: 0, left: 0, border: "none" }}
+              ></iframe>
             </div>
           </RevealWrapper>
         </div>
@@ -2047,7 +2050,7 @@ function ProcessStep({ step, index, total }) {
 
 function Tech() {
   return (
-    <section id="tech" style={{ padding: "140px 24px" }}>
+    <section id="tech" style={{ padding: "80px 24px" }}>
       <div style={{ maxWidth: 860, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 52 }}>
           <RevealWrapper>
@@ -2701,9 +2704,77 @@ function BackgroundOrbs() {
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 
+function Preloader() {
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    // Hide loader after a short delay or when everything is ready
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!loading) return null;
+
+  return (
+    <div style={{
+      position: "fixed",
+      inset: 0,
+      background: "#FAFAFA",
+      zIndex: 9999,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      animation: "fadeOut 0.6s ease-out 1.5s forwards"
+    }}>
+      <style>{`
+        @keyframes fadeOut {
+          to { opacity: 0; visibility: hidden; }
+        }
+        @keyframes pulseLogo {
+          0%, 100% { opacity: 0.5; transform: scale(0.95); }
+          50% { opacity: 1; transform: scale(1.05); }
+        }
+        @keyframes loadingBar {
+          0% { width: 0%; }
+          100% { width: 100%; }
+        }
+      `}</style>
+      <div style={{
+        fontFamily: "'Outfit', sans-serif",
+        fontSize: "32px",
+        fontWeight: 800,
+        color: "#292928",
+        letterSpacing: "-0.05em",
+        animation: "pulseLogo 1.5s ease-in-out infinite"
+      }}>
+        MŬZ
+      </div>
+      <div style={{
+        width: "120px",
+        height: "4px",
+        background: "rgba(0,0,0,0.05)",
+        borderRadius: "4px",
+        marginTop: "24px",
+        overflow: "hidden"
+      }}>
+        <div style={{
+          height: "100%",
+          background: "#35C9CE",
+          borderRadius: "4px",
+          animation: "loadingBar 1.5s ease-out forwards"
+        }}></div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   return (
-    <>
+    <div className="app-container" style={{ position: "relative" }}>
+      <Preloader />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -2763,7 +2834,7 @@ export default function App() {
           <CTASection />
         </div>
       </main>
-    </>
+    </div>
   );
 }
 
@@ -2828,18 +2899,31 @@ function ProjectCard({ project, index }) {
 }
 
 function PortfolioCards() {
+  const [activeFilter, setActiveFilter] = useState("All");
+  const [visibleCount, setVisibleCount] = useState(6);
+
+  // Extract all unique tags for filters
+  const allTags = Array.from(new Set(DATA.projects.flatMap(p => p.tags)));
+  const filters = ["All", ...allTags].slice(0, 5); // Take max 5 filters for UI
+
+  const filteredProjects = DATA.projects.filter(p => 
+    activeFilter === "All" ? true : p.tags.includes(activeFilter)
+  );
+
+  const visibleProjects = filteredProjects.slice(0, visibleCount);
+
   return (
     <section
       id="portfolio"
       style={{
-        padding: "140px 24px",
+        padding: "80px 24px",
         background: "transparent",
         position: "relative",
         zIndex: 5,
       }}
     >
       <div style={{ maxWidth: 1440, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 52 }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
           <RevealWrapper>
             <p
               style={{
@@ -2862,10 +2946,45 @@ function PortfolioCards() {
                 fontSize: "clamp(1.7rem, 3vw, 2.3rem)",
                 fontWeight: 700,
                 color: "#292928",
+                marginBottom: 30
               }}
             >
               Selected Works
             </h2>
+          </RevealWrapper>
+          
+          <RevealWrapper delay={160}>
+            <div style={{ 
+              display: "flex", 
+              justifyContent: "center", 
+              gap: "12px", 
+              flexWrap: "wrap",
+              marginBottom: "40px"
+            }}>
+              {filters.map(filter => (
+                <button
+                  key={filter}
+                  onClick={() => {
+                    setActiveFilter(filter);
+                    setVisibleCount(6); // reset on filter change
+                  }}
+                  style={{
+                    padding: "8px 20px",
+                    borderRadius: "100px",
+                    border: "none",
+                    background: activeFilter === filter ? "#35C9CE" : "rgba(0,0,0,0.04)",
+                    color: activeFilter === filter ? "#FFF" : "#5B5D5C",
+                    fontWeight: 600,
+                    fontSize: "14px",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    fontFamily: "'Inter', sans-serif",
+                  }}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
           </RevealWrapper>
         </div>
 
@@ -2876,10 +2995,18 @@ function PortfolioCards() {
             gap: 32,
           }}
         >
-          {DATA.projects.map((project, index) => (
+          {visibleProjects.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}
         </div>
+        
+        {visibleCount < filteredProjects.length && (
+          <div style={{ display: "flex", justifyContent: "center", marginTop: "50px" }}>
+            <SecondaryBtn onClick={() => setVisibleCount(prev => prev + 6)}>
+              See More
+            </SecondaryBtn>
+          </div>
+        )}
       </div>
     </section>
   );
