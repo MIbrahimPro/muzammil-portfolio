@@ -818,16 +818,16 @@ function Hero() {
 
 function CredStrip() {
   const brands = [
-    { src: "/brands/Anatome.png", alt: "Anatome" },
-    { src: "/brands/Bright.png", alt: "Bright" },
-    { src: "/brands/CV Labz.png", alt: "CV Labz" },
-    { src: "/brands/NC Dental U.png", alt: "NC Dental U" },
-    { src: "/brands/Pixellift.png", alt: "Pixellift" },
-    { src: "/brands/PMF Creative.png", alt: "PMF Creative" },
-    { src: "/brands/Prepare2Swim.png", alt: "Prepare2Swim" },
-    { src: "/brands/Qbo.png", alt: "Qbo" },
-    { src: "/brands/Zerodown Smart Start.png", alt: "Zerodown" },
-    { src: "/brands/AandA Plastering.png", alt: "AandA" }
+    { src: "/brands/Anatome_gray.png", alt: "Anatome" },
+    { src: "/brands/Bright_gray.png", alt: "Bright" },
+    { src: "/brands/CV Labz_gray.png", alt: "CV Labz" },
+    { src: "/brands/NC Dental U_gray.png", alt: "NC Dental U" },
+    { src: "/brands/Pixellift_gray.png", alt: "Pixellift" },
+    { src: "/brands/PMF Creative_gray.png", alt: "PMF Creative" },
+    { src: "/brands/Prepare2Swim_gray.png", alt: "Prepare2Swim" },
+    { src: "/brands/Qbo_gray.png", alt: "Qbo" },
+    { src: "/brands/Zerodown Smart Start_gray.png", alt: "Zerodown" },
+    { src: "/brands/AandA Plastering_gray.png", alt: "AandA" }
   ];
 
   return (
