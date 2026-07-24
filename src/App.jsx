@@ -872,13 +872,17 @@ function CredStrip() {
           -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
         }
         @keyframes scrollMarquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+          0% { transform: translate3d(0, 0, 0); }
+          100% { transform: translate3d(-50%, 0, 0); }
         }
         .marquee-content {
           display: flex;
           animation: scrollMarquee 25s linear infinite;
           width: max-content;
+          will-change: transform;
+          transform: translateZ(0);
+          backface-visibility: hidden;
+          perspective: 1000px;
         }
         .marquee-content:hover {
           animation-play-state: paused;
