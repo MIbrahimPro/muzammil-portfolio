@@ -831,41 +831,45 @@ function CredStrip() {
   ];
 
   return (
-    <section className="cred-section">
+    <section className="cred-section" style={{ padding: "0 24px 60px", position: "relative", zIndex: 25, marginTop: "-40px" }}>
       <style>{`
-        .cred-section {
-          padding: 0 0 60px;
-          position: relative;
-          z-index: 25;
-          margin-top: -20px;
-          width: 100vw;
-          left: 50%;
-          transform: translateX(-50%);
-        }
         @media (max-width: 900px) {
-          .cred-section {
-            margin-top: 20px;
-            padding-bottom: 40px;
-          }
+          .cred-section { margin-top: 0px !important; }
+        }
+        .cred-inner {
+          display: flex;
+          align-items: center;
+          background: rgba(255,255,255,0.9);
+          backdrop-filter: blur(20px);
+          border-radius: 24px;
+          box-shadow: 0 12px 40px rgba(0,0,0,0.04);
+          border: 1px solid rgba(255,255,255,1);
+          padding: 32px 48px;
+          max-width: 1400px;
+          margin: 0 auto;
+          overflow: hidden;
         }
         .cred-title {
-          text-align: center;
           font-size: 13px;
           font-weight: 600;
           color: #6B7280;
+          white-space: nowrap;
+          padding-right: 40px;
+          border-right: 1px solid rgba(0,0,0,0.1);
+          margin-right: 40px;
+          flex-shrink: 0;
           text-transform: uppercase;
-          letter-spacing: 0.1em;
-          margin-bottom: 32px;
+          letter-spacing: 0.05em;
           font-family: 'Inter', sans-serif;
         }
         .marquee-container {
           overflow: hidden;
-          width: 100%;
+          flex: 1;
           display: flex;
           align-items: center;
           position: relative;
-          mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-          -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+          mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+          -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
         }
         @keyframes scrollMarquee {
           0% { transform: translateX(0); }
@@ -873,20 +877,24 @@ function CredStrip() {
         }
         .marquee-content {
           display: flex;
-          gap: 60px;
-          align-items: center;
-          padding-left: 60px;
-          animation: scrollMarquee 35s linear infinite;
+          animation: scrollMarquee 25s linear infinite;
           width: max-content;
         }
         .marquee-content:hover {
           animation-play-state: paused;
         }
+        .marquee-track {
+          display: flex;
+          gap: 50px;
+          align-items: center;
+          padding-right: 50px;
+        }
         .cred-brand-img {
-          height: 36px;
+          height: 32px;
           width: auto;
+          max-width: 160px;
           object-fit: contain;
-          opacity: 0.5;
+          opacity: 0.6;
           filter: grayscale(100%);
           transition: all 0.3s ease;
           display: block;
@@ -895,32 +903,41 @@ function CredStrip() {
           opacity: 1;
           filter: grayscale(0%);
         }
-        @media (max-width: 768px) {
-          .cred-brand-img {
-            height: 28px;
+        @media (max-width: 900px) {
+          .cred-inner {
+            flex-direction: column;
+            padding: 24px;
+            gap: 24px;
           }
-          .marquee-content {
-            gap: 40px;
-            padding-left: 40px;
-            animation-duration: 25s;
+          .cred-title {
+            padding-right: 0;
+            border-right: none;
+            margin-right: 0;
+          }
+          .marquee-container {
+            width: 100%;
           }
         }
       `}</style>
-      
-      <div className="cred-title">
-        Trusted by brands around the world
-      </div>
-      
-      <div className="marquee-container">
-        <div className="marquee-content">
-          {[...brands, ...brands].map((brand, i) => (
-            <img 
-              key={i} 
-              src={brand.src} 
-              alt={brand.alt} 
-              className="cred-brand-img"
-            />
-          ))}
+
+      <div className="cred-inner">
+        <div className="cred-title">
+          Trusted by brands around the world
+        </div>
+        
+        <div className="marquee-container">
+          <div className="marquee-content">
+            <div className="marquee-track">
+              {brands.map((brand, i) => (
+                <img key={`a-${i}`} src={brand.src} alt={brand.alt} className="cred-brand-img" />
+              ))}
+            </div>
+            <div className="marquee-track">
+              {brands.map((brand, i) => (
+                <img key={`b-${i}`} src={brand.src} alt={brand.alt} className="cred-brand-img" />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
