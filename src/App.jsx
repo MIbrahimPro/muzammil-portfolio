@@ -834,70 +834,86 @@ function CredStrip() {
     <section className="cred-section">
       <style>{`
         .cred-section {
-          padding: 0 24px 60px;
+          padding: 0 0 60px;
           position: relative;
           z-index: 25;
-          margin-top: -40px;
+          margin-top: -20px;
+          width: 100vw;
+          left: 50%;
+          transform: translateX(-50%);
         }
         @media (max-width: 900px) {
           .cred-section {
-            margin-top: 0px;
+            margin-top: 20px;
+            padding-bottom: 40px;
           }
         }
-        .cred-inner {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 40px;
-          padding: 32px 48px;
+        .cred-title {
+          text-align: center;
+          font-size: 13px;
+          font-weight: 600;
+          color: #6B7280;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          margin-bottom: 32px;
+          font-family: 'Inter', sans-serif;
         }
-        .cred-brands {
+        .marquee-container {
+          overflow: hidden;
+          width: 100%;
           display: flex;
           align-items: center;
-          gap: 40px;
-          flex: 1;
-          justify-content: space-evenly;
-          flex-wrap: wrap;
+          position: relative;
+          mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+          -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        }
+        @keyframes scrollMarquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .marquee-content {
+          display: flex;
+          gap: 60px;
+          align-items: center;
+          padding-left: 60px;
+          animation: scrollMarquee 35s linear infinite;
+          width: max-content;
+        }
+        .marquee-content:hover {
+          animation-play-state: paused;
         }
         .cred-brand-img {
-          height: 32px;
+          height: 36px;
           width: auto;
           object-fit: contain;
-          opacity: 0.6;
+          opacity: 0.5;
           filter: grayscale(100%);
           transition: all 0.3s ease;
+          display: block;
         }
         .cred-brand-img:hover {
           opacity: 1;
           filter: grayscale(0%);
         }
-        @media (max-width: 900px) {
-          .cred-inner {
-            flex-direction: column;
-            padding: 32px 24px;
-            gap: 24px;
-            text-align: center;
+        @media (max-width: 768px) {
+          .cred-brand-img {
+            height: 28px;
           }
-          .cred-brands {
-            gap: 24px;
-            justify-content: center;
+          .marquee-content {
+            gap: 40px;
+            padding-left: 40px;
+            animation-duration: 25s;
           }
         }
       `}</style>
-      <div className="cred-inner" style={{
-        maxWidth: 1400,
-        margin: "0 auto",
-        background: "rgba(255,255,255,0.9)",
-        backdropFilter: "blur(20px)",
-        borderRadius: 24,
-        boxShadow: "0 12px 40px rgba(0,0,0,0.04)",
-        border: "1px solid rgba(255,255,255,1)",
-      }}>
-        <div style={{ fontSize: 13, fontWeight: 600, color: "#6B7280", whiteSpace: "nowrap" }}>
-          Trusted by brands around the world
-        </div>
-        <div className="cred-brands">
-          {brands.map((brand, i) => (
+      
+      <div className="cred-title">
+        Trusted by brands around the world
+      </div>
+      
+      <div className="marquee-container">
+        <div className="marquee-content">
+          {[...brands, ...brands].map((brand, i) => (
             <img 
               key={i} 
               src={brand.src} 
