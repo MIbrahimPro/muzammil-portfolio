@@ -1837,17 +1837,17 @@ function ProjectShowcase({ scrollProgress = 0 }) {
         }
         @media (max-width: 1100px) {
           .reference-orbit-stage {
-            top: 35%;
-            height: 65%;
+            transform: translate(-50%, 15vh) scale(0.85);
           }
         }
         @media (max-width: 760px) {
           .reference-orbit-stage {
             right: 0;
             width: 100vw;
+            height: 100vh;
             margin: 0;
-            top: 35%;
-            height: 65%;
+            top: 0;
+            transform: translate(-50%, 15vh) scale(0.85);
           }
           .reference-orbit-status {
             bottom: 6%;
