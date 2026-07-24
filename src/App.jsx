@@ -868,8 +868,24 @@ function CredStrip() {
           display: flex;
           align-items: center;
           position: relative;
-          mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-          -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+        }
+        .marquee-container::before,
+        .marquee-container::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 60px;
+          z-index: 2;
+          pointer-events: none;
+        }
+        .marquee-container::before {
+          left: 0;
+          background: linear-gradient(to right, rgba(255,255,255,1), transparent);
+        }
+        .marquee-container::after {
+          right: 0;
+          background: linear-gradient(to left, rgba(255,255,255,1), transparent);
         }
         @keyframes scrollMarquee {
           0% { transform: translate3d(0, 0, 0); }
@@ -898,14 +914,12 @@ function CredStrip() {
           width: auto;
           max-width: 160px;
           object-fit: contain;
-          opacity: 0.6;
-          filter: grayscale(100%);
-          transition: all 0.3s ease;
+          opacity: 0.5;
+          transition: opacity 0.3s ease;
           display: block;
         }
         .cred-brand-img:hover {
           opacity: 1;
-          filter: grayscale(0%);
         }
         @media (max-width: 900px) {
           .cred-inner {
