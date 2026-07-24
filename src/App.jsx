@@ -1835,13 +1835,19 @@ function ProjectShowcase({ scrollProgress = 0 }) {
           transform: translateX(-50%);
           pointer-events: auto;
         }
+        @media (max-width: 1100px) {
+          .reference-orbit-stage {
+            top: 35%;
+            height: 65%;
+          }
+        }
         @media (max-width: 760px) {
           .reference-orbit-stage {
             right: 0;
             width: 100vw;
-            height: 100vh;
             margin: 0;
-            top: 0;
+            top: 35%;
+            height: 65%;
           }
           .reference-orbit-status {
             bottom: 6%;
