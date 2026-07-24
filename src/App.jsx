@@ -679,13 +679,14 @@ function Hero() {
             .hero-content-wrapper {
               flex-direction: column;
               justify-content: flex-start;
-              padding-top: 120px;
+              padding-top: 140px;
             }
             .hero-copy-layer {
               width: 100%;
               align-items: center;
               text-align: center;
               max-width: 500px;
+              margin-top: 0;
             }
             .hero-copy-layer h1 {
               font-size: clamp(2rem, 8vw, 2.5rem) !important;
