@@ -899,6 +899,7 @@ function CredStrip() {
           transform: translateZ(0);
           backface-visibility: hidden;
           perspective: 1000px;
+          flex-shrink: 0;
         }
         .marquee-content:hover {
           animation-play-state: paused;
@@ -908,15 +909,16 @@ function CredStrip() {
           gap: 50px;
           align-items: center;
           padding-right: 50px;
+          flex-shrink: 0;
         }
         .cred-brand-img {
           height: 32px;
           width: auto;
-          max-width: 160px;
           object-fit: contain;
           opacity: 0.5;
           transition: opacity 0.3s ease;
           display: block;
+          flex-shrink: 0;
         }
         .cred-brand-img:hover {
           opacity: 1;
