@@ -2704,77 +2704,22 @@ function BackgroundOrbs() {
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 
-function Preloader() {
-  const [loading, setLoading] = useState(true);
-  
+export default function App() {
   useEffect(() => {
-    // Hide loader after a short delay or when everything is ready
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
+    const loader = document.getElementById('global-loader');
+    if (loader) {
+      setTimeout(() => {
+        loader.classList.add('fade-out');
+        document.body.classList.remove('loading');
+        setTimeout(() => {
+          loader.remove();
+        }, 600);
+      }, 1000); // Wait 1s for initial render and 3D setup
+    }
   }, []);
 
-  if (!loading) return null;
-
-  return (
-    <div style={{
-      position: "fixed",
-      inset: 0,
-      background: "#FAFAFA",
-      zIndex: 9999,
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      animation: "fadeOut 0.6s ease-out 1.5s forwards"
-    }}>
-      <style>{`
-        @keyframes fadeOut {
-          to { opacity: 0; visibility: hidden; }
-        }
-        @keyframes pulseLogo {
-          0%, 100% { opacity: 0.5; transform: scale(0.95); }
-          50% { opacity: 1; transform: scale(1.05); }
-        }
-        @keyframes loadingBar {
-          0% { width: 0%; }
-          100% { width: 100%; }
-        }
-      `}</style>
-      <div style={{
-        fontFamily: "'Outfit', sans-serif",
-        fontSize: "32px",
-        fontWeight: 800,
-        color: "#292928",
-        letterSpacing: "-0.05em",
-        animation: "pulseLogo 1.5s ease-in-out infinite"
-      }}>
-        MŬZ
-      </div>
-      <div style={{
-        width: "120px",
-        height: "4px",
-        background: "rgba(0,0,0,0.05)",
-        borderRadius: "4px",
-        marginTop: "24px",
-        overflow: "hidden"
-      }}>
-        <div style={{
-          height: "100%",
-          background: "#35C9CE",
-          borderRadius: "4px",
-          animation: "loadingBar 1.5s ease-out forwards"
-        }}></div>
-      </div>
-    </div>
-  );
-}
-
-export default function App() {
   return (
     <div className="app-container" style={{ position: "relative" }}>
-      <Preloader />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
