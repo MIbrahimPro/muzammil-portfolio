@@ -818,12 +818,16 @@ function Hero() {
 
 function CredStrip() {
   const brands = [
-    { name: "HIJABEAZE", font: "'Inter', sans-serif", tracking: "-0.02em", weight: 800, transform: "uppercase" },
-    { name: "P2S", font: "'Inter', sans-serif", tracking: "-0.04em", weight: 900, transform: "uppercase" },
-    { name: "RELENTLESS LABZ", font: "'Inter', sans-serif", tracking: "-0.03em", weight: 800, transform: "uppercase" },
-    { name: "SPINE & LABEL", font: "'Inter', sans-serif", tracking: "-0.03em", weight: 800, transform: "uppercase" },
-    { name: "Wild Key", font: "'Inter', sans-serif", tracking: "-0.02em", weight: 600, transform: "none", size: "22px" },
-    { name: "ATMO STREAMS", font: "'Inter', sans-serif", tracking: "-0.02em", weight: 800, transform: "uppercase" },
+    { src: "/brands/Anatome.png", alt: "Anatome" },
+    { src: "/brands/Bright.png", alt: "Bright" },
+    { src: "/brands/CV Labz.png", alt: "CV Labz" },
+    { src: "/brands/NC Dental U.png", alt: "NC Dental U" },
+    { src: "/brands/Pixellift.png", alt: "Pixellift" },
+    { src: "/brands/PMF Creative.png", alt: "PMF Creative" },
+    { src: "/brands/Prepare2Swim.png", alt: "Prepare2Swim" },
+    { src: "/brands/Qbo.png", alt: "Qbo" },
+    { src: "/brands/Zerodown Smart Start.png", alt: "Zerodown" },
+    { src: "/brands/AandA Plastering.png", alt: "AandA" }
   ];
 
   return (
@@ -855,6 +859,18 @@ function CredStrip() {
           justify-content: space-evenly;
           flex-wrap: wrap;
         }
+        .cred-brand-img {
+          height: 32px;
+          width: auto;
+          object-fit: contain;
+          opacity: 0.6;
+          filter: grayscale(100%);
+          transition: all 0.3s ease;
+        }
+        .cred-brand-img:hover {
+          opacity: 1;
+          filter: grayscale(0%);
+        }
         @media (max-width: 900px) {
           .cred-inner {
             flex-direction: column;
@@ -882,18 +898,12 @@ function CredStrip() {
         </div>
         <div className="cred-brands">
           {brands.map((brand, i) => (
-            <div key={i} style={{ 
-              fontWeight: brand.weight, 
-              fontSize: brand.size || "16px", 
-              color: "#374151",
-              fontFamily: brand.font,
-              letterSpacing: brand.tracking,
-              textTransform: brand.transform,
-              opacity: 0.8,
-              textAlign: "center"
-            }}>
-              {brand.name}
-            </div>
+            <img 
+              key={i} 
+              src={brand.src} 
+              alt={brand.alt} 
+              className="cred-brand-img"
+            />
           ))}
         </div>
       </div>
