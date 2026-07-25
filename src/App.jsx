@@ -687,6 +687,10 @@ function Hero() {
             text-transform: uppercase;
             letter-spacing: 0.05em;
           }
+          .hero-primary-btn, .hero-secondary-btn {
+            padding: 14px 28px;
+            font-size: 16px;
+          }
           @media (max-width: 1100px) {
             .hero-content-wrapper {
               flex-direction: column;
@@ -734,9 +738,36 @@ function Hero() {
             .hero-content-wrapper {
               transform: none !important;
               padding-top: 10px;
-              padding-bottom: 20px;
+              padding-bottom: 10px;
               height: auto;
               flex: none;
+            }
+            .hero-action-row {
+              flex-wrap: nowrap;
+              gap: 8px;
+            }
+            .hero-primary-btn, .hero-secondary-btn {
+              padding: 10px 16px;
+              font-size: 13px;
+              flex: 1;
+              justify-content: center;
+            }
+            .hero-metrics-row {
+              gap: 12px;
+              margin-top: 16px;
+            }
+            .hero-metric-val {
+              font-size: 24px;
+            }
+            .hero-metric-icon {
+              width: 18px;
+              height: 18px;
+            }
+            .hero-metric-val-row {
+              gap: 6px;
+            }
+            .hero-metric-label {
+              font-size: 10px;
             }
           }
         `}</style>
@@ -789,19 +820,21 @@ function Hero() {
             <RevealWrapper delay={270}>
               <div className="hero-action-row">
                 <PrimaryBtn
+                  className="hero-primary-btn"
                   onClick={() =>
                     document.querySelector("#portfolio")?.scrollIntoView({ behavior: "smooth" })
                   }
-                  style={{ display: "flex", alignItems: "center", gap: 8, padding: "14px 28px" }}
+                  style={{ display: "flex", alignItems: "center", gap: 8 }}
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg>
                   View Projects
                 </PrimaryBtn>
                 <SecondaryBtn
+                  className="hero-secondary-btn"
                   onClick={() =>
                     document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })
                   }
-                  style={{ display: "flex", alignItems: "center", gap: 8, padding: "14px 28px", background: "white", border: "1px solid #E5E7EB" }}
+                  style={{ display: "flex", alignItems: "center", gap: 8, background: "white", border: "1px solid #E5E7EB" }}
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                   Book Consultation
@@ -1538,7 +1571,7 @@ function OrbitScene({ onHover, scrollProgress }) {
 
   // Diagonal tilted oval
   const radiusX = isMobile 
-    ? viewport.width * 0.32 
+    ? viewport.width * 0.28 
     : isTablet 
       ? Math.min(3.5, viewport.width * 0.35) 
       : Math.min(3.0, viewport.width * 0.22);
