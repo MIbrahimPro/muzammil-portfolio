@@ -724,8 +724,9 @@ function Hero() {
           @media (max-width: 760px) {
             .hero-orbit-section {
               position: sticky;
-              height: 100vh;
-              min-height: 100vh;
+              top: 72px;
+              height: calc(100vh - 72px);
+              min-height: calc(100vh - 72px);
               flex-direction: column;
               justify-content: flex-end;
               padding-bottom: 20px;
@@ -1537,7 +1538,7 @@ function OrbitScene({ onHover, scrollProgress }) {
 
   // Diagonal tilted oval
   const radiusX = isMobile 
-    ? viewport.width * 0.38 
+    ? viewport.width * 0.32 
     : isTablet 
       ? Math.min(3.5, viewport.width * 0.35) 
       : Math.min(3.0, viewport.width * 0.22);
@@ -1869,7 +1870,7 @@ function ProjectShowcase({ scrollProgress = 0 }) {
           .reference-orbit-stage {
             position: relative;
             flex: 1;
-            width: 100vw;
+            width: 100%;
             height: auto;
             min-height: 0;
             margin: 0;
