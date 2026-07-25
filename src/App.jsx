@@ -1589,9 +1589,9 @@ function OrbitScene({ onHover, scrollProgress }) {
     shiftX = (viewport.width / 2) - radiusX - 1.0;
     shiftY = 0; // Centered vertically
   } else {
-    // Tablet/Mobile: Anchor to the bottom edge to prevent overlap on short screens
+    // Tablet/Mobile: Center the circle perfectly within the available flex space
     shiftX = 0; // Centered horizontally
-    shiftY = (-viewport.height / 2) + radiusY + (isMobile ? 1.5 : 1.5);
+    shiftY = 0; // Centered vertically
   }
 
   useEffect(() => {
