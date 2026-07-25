@@ -699,40 +699,6 @@ function Hero() {
             font-size: 16px;
           }
           @media (max-width: 1100px) {
-            .hero-content-wrapper {
-              flex-direction: column;
-              justify-content: flex-start;
-              padding-top: 140px;
-            }
-            .hero-copy-layer {
-              width: 100%;
-              align-items: center;
-              text-align: center;
-              max-width: 500px;
-              margin-top: 0;
-            }
-            .hero-copy-layer h1 {
-              font-size: clamp(2rem, 8vw, 2.5rem) !important;
-            }
-            .hero-canvas-layer {
-              right: 0;
-              width: 100%;
-              top: 50%;
-              height: 50%;
-            }
-            .hero-action-row {
-              justify-content: center;
-            }
-            .hero-metrics-row {
-              justify-content: center;
-              flex-wrap: wrap;
-            }
-            .hero-metric {
-              align-items: center;
-              text-align: center;
-            }
-          }
-          @media (max-width: 760px) {
             .hero-orbit-section {
               position: sticky;
               top: 72px;
@@ -748,7 +714,32 @@ function Hero() {
               padding-bottom: 10px;
               height: auto;
               flex: none;
+              flex-direction: column;
+              justify-content: flex-start;
             }
+            .hero-copy-layer {
+              width: 100%;
+              align-items: center;
+              text-align: center;
+              max-width: 500px;
+              margin-top: 0;
+            }
+            .hero-copy-layer h1 {
+              font-size: clamp(2rem, 8vw, 2.5rem) !important;
+            }
+            .hero-action-row {
+              justify-content: center;
+            }
+            .hero-metrics-row {
+              justify-content: center;
+              flex-wrap: wrap;
+            }
+            .hero-metric {
+              align-items: center;
+              text-align: center;
+            }
+          }
+          @media (max-width: 760px) {
             .hero-action-row {
               flex-wrap: nowrap;
               gap: 8px;
@@ -1903,11 +1894,6 @@ function ProjectShowcase({ scrollProgress = 0 }) {
         }
         @media (max-width: 1100px) {
           .reference-orbit-stage {
-            transform: translate(-50%, 15vh) scale(0.85);
-          }
-        }
-        @media (max-width: 760px) {
-          .reference-orbit-stage {
             position: relative;
             flex: 1;
             width: 100%;
@@ -1922,6 +1908,8 @@ function ProjectShowcase({ scrollProgress = 0 }) {
             bottom: 6%;
             max-width: calc(100vw - 48px);
           }
+        }
+        @media (max-width: 760px) {
         }
       `}</style>
 
