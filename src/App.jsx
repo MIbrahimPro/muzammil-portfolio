@@ -720,6 +720,7 @@ function Hero() {
               align-items: center;
               text-align: center;
             }
+          }
           @media (max-width: 760px) {
             .hero-scroll-container {
               height: auto;
