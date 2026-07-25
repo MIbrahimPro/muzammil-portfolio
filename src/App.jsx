@@ -308,7 +308,7 @@ function RevealWrapper({ children, delay = 0, style: extraStyle = {} }) {
 
 // ─── Shared Buttons ───────────────────────────────────────────────────────────
 
-function PrimaryBtn({ children, onClick, href, type }) {
+function PrimaryBtn({ children, onClick, href, type, className, style }) {
   const [hov, setHov] = useState(false);
   const s = {
     display: "inline-flex",
@@ -328,6 +328,7 @@ function PrimaryBtn({ children, onClick, href, type }) {
     boxShadow: hov ? "0 10px 32px rgba(81,210,214,0.38)" : "none",
     textDecoration: "none",
     justifyContent: "center",
+    ...style,
   };
   if (href)
     return (
@@ -336,6 +337,7 @@ function PrimaryBtn({ children, onClick, href, type }) {
         target="_blank"
         rel="noreferrer"
         style={s}
+        className={className}
         onMouseEnter={() => setHov(true)}
         onMouseLeave={() => setHov(false)}
       >
@@ -347,6 +349,7 @@ function PrimaryBtn({ children, onClick, href, type }) {
       type={type || "button"}
       onClick={onClick}
       style={s}
+      className={className}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
     >
@@ -355,7 +358,7 @@ function PrimaryBtn({ children, onClick, href, type }) {
   );
 }
 
-function SecondaryBtn({ children, onClick, href }) {
+function SecondaryBtn({ children, onClick, href, className, style }) {
   const [hov, setHov] = useState(false);
   const s = {
     display: "inline-flex",
@@ -372,6 +375,8 @@ function SecondaryBtn({ children, onClick, href }) {
     fontSize: 14,
     transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
     textDecoration: "none",
+    justifyContent: "center",
+    ...style,
   };
   if (href)
     return (
@@ -380,6 +385,7 @@ function SecondaryBtn({ children, onClick, href }) {
         target="_blank"
         rel="noreferrer"
         style={s}
+        className={className}
         onMouseEnter={() => setHov(true)}
         onMouseLeave={() => setHov(false)}
       >
@@ -390,6 +396,7 @@ function SecondaryBtn({ children, onClick, href }) {
     <button
       onClick={onClick}
       style={s}
+      className={className}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
     >
@@ -591,7 +598,7 @@ function Hero() {
       <section
         className="hero-orbit-section"
         style={{
-          background: `linear-gradient(to bottom, transparent 40%, rgba(139, 92, 246, ${0.08 + scrollProgress * 0.25}))`
+          background: `linear-gradient(to bottom, transparent 40%, rgba(139, 92, 246, ${0.08 + scrollProgress * 0.25}) 85%, transparent 100%)`
         }}
       >
         <style>{`
