@@ -641,6 +641,11 @@ function Hero() {
             height: 90%;
             z-index: 10;
           }
+          .hero-action-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+          }
           .hero-metrics-row {
             display: flex;
             gap: 20px;
@@ -703,6 +708,9 @@ function Hero() {
               width: 100%;
               top: 50%;
               height: 50%;
+            }
+            .hero-action-row {
+              justify-content: center;
             }
             .hero-metrics-row {
               justify-content: center;
@@ -778,14 +786,7 @@ function Hero() {
             </RevealWrapper>
 
             <RevealWrapper delay={270}>
-              <div
-                className="hero-action-row"
-                style={{
-                  display: "flex",
-                  gap: 16,
-                  flexWrap: "wrap",
-                }}
-              >
+              <div className="hero-action-row">
                 <PrimaryBtn
                   onClick={() =>
                     document.querySelector("#portfolio")?.scrollIntoView({ behavior: "smooth" })
