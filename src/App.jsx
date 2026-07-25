@@ -577,7 +577,7 @@ function Hero() {
       const windowHeight = window.innerHeight;
       const scrollable = height - windowHeight;
       const scrolled = -top;
-      let progress = scrolled / scrollable;
+      let progress = scrollable > 0 ? scrolled / scrollable : 0;
       progress = Math.max(0, Math.min(1, progress));
       setScrollProgress(progress);
     };
@@ -587,23 +587,30 @@ function Hero() {
   }, []);
 
   return (
-    <div ref={containerRef} style={{ height: "max(250vh, 2000px)", position: "relative", zIndex: 20 }}>
+    <div ref={containerRef} className="hero-scroll-container">
       <section
         className="hero-orbit-section"
         style={{
-          position: "sticky",
-          top: 0,
-          height: "max(100vh, 850px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "0",
-          overflow: "hidden",
-          isolation: "isolate",
           background: `linear-gradient(to bottom, transparent 40%, rgba(139, 92, 246, ${0.08 + scrollProgress * 0.25}))`
         }}
       >
         <style>{`
+          .hero-scroll-container {
+            height: max(250vh, 2000px);
+            position: relative;
+            z-index: 20;
+          }
+          .hero-orbit-section {
+            position: sticky;
+            top: 0;
+            height: max(100vh, 850px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            overflow: hidden;
+            isolation: isolate;
+          }
           .hero-content-wrapper {
             display: flex;
             align-items: center;
@@ -704,6 +711,23 @@ function Hero() {
             .hero-metric {
               align-items: center;
               text-align: center;
+            }
+          @media (max-width: 760px) {
+            .hero-scroll-container {
+              height: auto;
+            }
+            .hero-orbit-section {
+              position: relative;
+              height: auto;
+              min-height: 100vh;
+              flex-direction: column;
+              justify-content: flex-start;
+            }
+            .hero-content-wrapper {
+              transform: none !important;
+              padding-top: 20px;
+              padding-bottom: 60px;
+              height: auto;
             }
           }
         `}</style>
@@ -1842,12 +1866,14 @@ function ProjectShowcase({ scrollProgress = 0 }) {
         }
         @media (max-width: 760px) {
           .reference-orbit-stage {
-            right: 0;
+            position: relative;
+            left: 0;
             width: 100vw;
-            height: 100vh;
+            height: 50vh;
+            min-height: 420px;
             margin: 0;
             top: 0;
-            transform: translate(-50%, 15vh) scale(0.85);
+            transform: none;
           }
           .reference-orbit-status {
             bottom: 6%;
