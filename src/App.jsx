@@ -722,21 +722,20 @@ function Hero() {
             }
           }
           @media (max-width: 760px) {
-            .hero-scroll-container {
-              height: auto;
-            }
             .hero-orbit-section {
-              position: relative;
-              height: auto;
+              position: sticky;
+              height: 100vh;
               min-height: 100vh;
               flex-direction: column;
-              justify-content: flex-start;
+              justify-content: flex-end;
+              padding-bottom: 20px;
             }
             .hero-content-wrapper {
               transform: none !important;
-              padding-top: 20px;
-              padding-bottom: 60px;
+              padding-top: 10px;
+              padding-bottom: 20px;
               height: auto;
+              flex: none;
             }
           }
         `}</style>
@@ -1869,12 +1868,13 @@ function ProjectShowcase({ scrollProgress = 0 }) {
         @media (max-width: 760px) {
           .reference-orbit-stage {
             position: relative;
-            left: 0;
+            flex: 1;
             width: 100vw;
-            height: 50vh;
-            min-height: 420px;
+            height: auto;
+            min-height: 0;
             margin: 0;
             top: 0;
+            left: 0;
             transform: none;
           }
           .reference-orbit-status {
