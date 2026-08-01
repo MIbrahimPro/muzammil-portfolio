@@ -641,11 +641,10 @@ function Hero() {
           .hero-copy-layer {
             width: 60%;
             max-width: 720px;
-            text-align: center;
+            text-align: left;
             z-index: 20;
             display: flex;
             flex-direction: column;
-            align-items: center;
             gap: 16px;
             margin-top: 0;
           }
@@ -661,7 +660,6 @@ function Hero() {
             display: flex;
             gap: 16px;
             flex-wrap: wrap;
-            justify-content: center;
           }
           .hero-metrics-row {
             display: flex;
@@ -726,6 +724,7 @@ function Hero() {
               flex: none;
               flex-direction: column;
               justify-content: flex-start;
+              align-items: center;
               order: -1;
             }
             .hero-copy-layer {
