@@ -620,13 +620,13 @@ function Hero() {
           }
           .hero-content-wrapper {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
             width: 100%;
             max-width: 1440px;
             margin: 0 auto;
             height: 100%;
-            padding: 40px 24px 20px;
+            padding: 200px 24px 20px;
             position: relative;
             transform: translateY(var(--parallax-y));
           }
@@ -638,7 +638,7 @@ function Hero() {
             display: flex;
             flex-direction: column;
             gap: 16px;
-            margin-top: -100px;
+            margin-top: 0;
           }
           .hero-canvas-layer {
             position: absolute;
@@ -837,32 +837,6 @@ function Hero() {
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                   Book Consultation
                 </SecondaryBtn>
-              </div>
-            </RevealWrapper>
-            
-            <RevealWrapper delay={360}>
-              <div className="hero-metrics-row">
-                <div className="hero-metric">
-                  <div className="hero-metric-val-row">
-                    <svg className="hero-metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                    <span className="hero-metric-val">120+</span>
-                  </div>
-                  <span className="hero-metric-label">Stores Built</span>
-                </div>
-                <div className="hero-metric">
-                  <div className="hero-metric-val-row">
-                    <svg className="hero-metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                    <span className="hero-metric-val">3x</span>
-                  </div>
-                  <span className="hero-metric-label">Avg. Conversion Increase</span>
-                </div>
-                <div className="hero-metric">
-                  <div className="hero-metric-val-row">
-                    <svg className="hero-metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                    <span className="hero-metric-val">35+</span>
-                  </div>
-                  <span className="hero-metric-label">Countries Served</span>
-                </div>
               </div>
             </RevealWrapper>
           </div>
