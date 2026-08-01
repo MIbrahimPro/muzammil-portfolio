@@ -710,12 +710,13 @@ function Hero() {
             }
             .hero-content-wrapper {
               transform: none !important;
-              padding-top: 10px;
-              padding-bottom: 10px;
+              padding-top: 30px;
+              padding-bottom: 0;
               height: auto;
               flex: none;
               flex-direction: column;
               justify-content: flex-start;
+              order: -1;
             }
             .hero-copy-layer {
               width: 100%;
@@ -810,8 +811,7 @@ function Hero() {
                   margin: 0
                 }}
               >
-                I design and build custom Shopify, Squarespace, and Webflow sites,
-                from product pages that sell to full storefront launches that scale.
+                I build custom Shopify, Squarespace, and Webflow storefronts designed to scale and convert.
               </p>
             </RevealWrapper>
 
@@ -944,8 +944,8 @@ function CredStrip() {
           flex-shrink: 0;
         }
         .cred-brand-img {
-          height: 32px;
-          width: auto;
+          width: 110px;
+          height: 34px;
           object-fit: contain;
           opacity: 0.5;
           transition: opacity 0.3s ease;
