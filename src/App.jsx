@@ -289,14 +289,22 @@ function useReveal() {
   return [ref, visible];
 }
 
-function RevealWrapper({ children, delay = 0, style: extraStyle = {} }) {
+function RevealWrapper({ children, delay = 0, style: extraStyle = {}, direction = "up" }) {
   const [ref, visible] = useReveal();
+  
+  let transformHidden = "translateY(60px) scale(0.96)";
+  if (direction === "left") {
+    transformHidden = "translateX(60px) scale(0.96)";
+  } else if (direction === "right") {
+    transformHidden = "translateX(-60px) scale(0.96)";
+  }
+  
   return (
     <div
       ref={ref}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0) scale(1)" : "translateY(60px) scale(0.96)",
+        transform: visible ? "translate(0, 0) scale(1)" : transformHidden,
         transition: `all 1.1s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
         ...extraStyle,
       }}
@@ -633,10 +641,11 @@ function Hero() {
           .hero-copy-layer {
             width: 60%;
             max-width: 720px;
-            text-align: left;
+            text-align: center;
             z-index: 20;
             display: flex;
             flex-direction: column;
+            align-items: center;
             gap: 16px;
             margin-top: 0;
           }
@@ -652,6 +661,7 @@ function Hero() {
             display: flex;
             gap: 16px;
             flex-wrap: wrap;
+            justify-content: center;
           }
           .hero-metrics-row {
             display: flex;
@@ -2890,7 +2900,7 @@ function ProjectCard({ project, index }) {
   const [isHovered, setIsHovered] = useState(false);
   
   return (
-    <RevealWrapper delay={index * 50}>
+    <RevealWrapper direction="left" delay={(index % 6) * 150}>
       <a
         href={project.siteUrl}
         target="_blank"
