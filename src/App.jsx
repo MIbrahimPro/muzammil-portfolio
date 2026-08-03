@@ -932,16 +932,16 @@ function Hero() {
 
 function CredStrip() {
   const brands = [
-    { src: "/brands/Anatome_gray.png", alt: "Anatome" },
     { src: "/brands/Bright_gray.png", alt: "Bright" },
+    { src: "/brands/Anatome_gray.png", alt: "Anatome" },
+    { src: "/brands/Qbo_gray.png", alt: "Qbo" },
     { src: "/brands/CV Labz_gray.png", alt: "CV Labz" },
     { src: "/brands/NC Dental U_gray.png", alt: "NC Dental U" },
-    { src: "/brands/Pixellift_gray.png", alt: "Pixellift" },
-    { src: "/brands/PMF Creative_gray.png", alt: "PMF Creative" },
+    { src: "/brands/AandA Plastering_gray.png", alt: "AandA Plastering" },
     { src: "/brands/Prepare2Swim_gray.png", alt: "Prepare2Swim" },
-    { src: "/brands/Qbo_gray.png", alt: "Qbo" },
     { src: "/brands/Zerodown Smart Start_gray.png", alt: "Zerodown" },
-    { src: "/brands/AandA Plastering_gray.png", alt: "AandA" }
+    { src: "/brands/PMF Creative_gray.png", alt: "PMF Creative" },
+    { src: "/brands/Pixellift_gray.png", alt: "Pixellift" }
   ];
 
   return (
@@ -1007,7 +1007,7 @@ function CredStrip() {
         }
         .marquee-content {
           display: flex;
-          animation: scrollMarquee 25s linear infinite;
+          animation: scrollMarquee 35s linear infinite;
           width: max-content;
           will-change: transform;
           transform: translateZ(0);
@@ -1020,9 +1020,9 @@ function CredStrip() {
         }
         .marquee-track {
           display: flex;
-          gap: 50px;
+          gap: 80px;
           align-items: center;
-          padding-right: 50px;
+          padding-right: 80px;
           flex-shrink: 0;
         }
         .cred-brand-img {
