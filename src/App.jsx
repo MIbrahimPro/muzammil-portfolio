@@ -418,6 +418,7 @@ function SecondaryBtn({ children, onClick, href, className, style }) {
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
@@ -573,8 +574,80 @@ function Nav() {
           >
             Book Call
           </button>
+
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="mobile-menu-toggle"
+            style={{
+              background: "rgba(0,0,0,0.05)",
+              border: "none",
+              borderRadius: "8px",
+              padding: "8px",
+              cursor: "pointer",
+              display: "none",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#111"
+            }}
+            aria-label="Toggle Menu"
+          >
+            {mobileMenuOpen ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            )}
+          </button>
         </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: "72px",
+            left: 0,
+            right: 0,
+            background: "rgba(255, 255, 255, 0.98)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            borderBottom: "1px solid rgba(0,0,0,0.08)",
+            padding: "20px 24px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
+            zIndex: 49,
+          }}
+        >
+          {[
+            ["#projects", "Projects"],
+            ["#process", "Process"],
+            ["#tech", "Tech"],
+            ["#testimonials", "Testimonials"],
+          ].map(([href, label]) => (
+            <button
+              key={href}
+              onClick={() => {
+                setMobileMenuOpen(false);
+                go(href);
+              }}
+              style={{
+                background: "none",
+                border: "none",
+                textAlign: "left",
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: 600,
+                fontSize: "16px",
+                color: "#292928",
+                padding: "8px 0",
+                cursor: "pointer"
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
     </nav>
   );
 }
@@ -953,10 +1026,10 @@ function CredStrip() {
           flex-shrink: 0;
         }
         .cred-brand-img {
-          width: 110px;
-          height: 34px;
+          height: 38px;
+          width: auto;
           object-fit: contain;
-          opacity: 0.5;
+          opacity: 0.55;
           transition: opacity 0.3s ease;
           display: block;
           flex-shrink: 0;
@@ -2862,10 +2935,12 @@ export default function App() {
         ::-webkit-scrollbar-thumb:hover { background: #51D2D6; }
         .nav-link-btn:hover { color: #292928 !important; }
         .nav-links { display: flex; }
+        .mobile-menu-toggle { display: none; }
 
         @media (max-width: 700px) {
           .nav-links { display: none !important; }
           .avail-badge { display: none !important; }
+          .mobile-menu-toggle { display: flex !important; }
         }
 
         @media (prefers-reduced-motion: reduce) {
