@@ -440,10 +440,12 @@ function Nav() {
     return () => window.removeEventListener("scroll", fn);
   }, []);
   
-  const go = (id) =>
-    document
-      .querySelector(id)
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const go = (id) => {
+    const el = document.querySelector(id);
+    if (!el) return;
+    const y = el.getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({ top: y, behavior: "smooth" });
+  };
 
   return (
     <nav
@@ -496,10 +498,20 @@ function Nav() {
           <img
             src="/logo.png"
             alt="Muzammil Logo"
+            className="nav-logo-img"
             style={{
-              width: 48,
-              height: 48,
+              height: 38,
+              width: "auto",
               objectFit: "contain",
+              transition: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.12) translateY(-1px)";
+              e.currentTarget.style.filter = "drop-shadow(0 4px 12px rgba(81, 210, 214, 0.45))";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1) translateY(0)";
+              e.currentTarget.style.filter = "none";
             }}
           />
         </button>
@@ -1265,7 +1277,7 @@ export function DiscreteProjectShowcase() {
   };
 
   return (
-    <section id="projects" style={{ padding: "28px 0 0" }}>
+    <section id="projects-orbit-stage" style={{ padding: "28px 0 0" }}>
       <style>{`
         .project-circle-stage {
           position: relative;
@@ -1827,7 +1839,7 @@ function ProjectShowcase({ scrollProgress = 0 }) {
 
   return (
     <div
-      id="projects"
+      id="projects-3d"
       className="reference-orbit-stage"
       role="region"
       aria-label={`${DATA.projects.length} selected ecommerce projects in an interactive gallery`}
@@ -3058,7 +3070,7 @@ function PortfolioCards() {
 
   return (
     <section
-      id="portfolio"
+      id="projects"
       style={{
         padding: "80px 24px",
         background: "transparent",
