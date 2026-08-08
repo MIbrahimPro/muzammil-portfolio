@@ -500,14 +500,14 @@ function Nav() {
             alt="Muzammil Logo"
             className="nav-logo-img"
             style={{
-              height: 38,
+              height: 26,
               width: "auto",
               objectFit: "contain",
               transition: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.12) translateY(-1px)";
-              e.currentTarget.style.filter = "drop-shadow(0 4px 12px rgba(81, 210, 214, 0.45))";
+              e.currentTarget.style.transform = "scale(1.08) translateY(-1px)";
+              e.currentTarget.style.filter = "drop-shadow(0 4px 10px rgba(81, 210, 214, 0.4))";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "scale(1) translateY(0)";
