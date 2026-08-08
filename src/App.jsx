@@ -1038,18 +1038,32 @@ function CredStrip() {
           opacity: 1;
         }
         @media (max-width: 900px) {
+          .cred-section {
+            padding: 0 12px 30px !important;
+            margin-top: 0px !important;
+          }
           .cred-inner {
             flex-direction: column;
-            padding: 24px;
-            gap: 24px;
+            padding: 14px 16px;
+            gap: 10px;
+            border-radius: 16px;
           }
           .cred-title {
+            font-size: 11px;
             padding-right: 0;
             border-right: none;
             margin-right: 0;
+            text-align: center;
           }
           .marquee-container {
             width: 100%;
+          }
+          .marquee-track {
+            gap: 40px;
+            padding-right: 40px;
+          }
+          .cred-brand-img {
+            height: 28px;
           }
         }
       `}</style>
